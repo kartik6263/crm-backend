@@ -7,7 +7,7 @@ import lombok.*;
 @Entity
 @Data
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
 public class databaseCRM {
 
 
@@ -29,9 +29,9 @@ public class databaseCRM {
 
 
    // private String role; // Admin or Sales
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
+    //@Enumerated(EnumType.STRING)
+    //private Role role;
+   private String role;
 
     private Long companyId;
 
