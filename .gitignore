@@ -18,7 +18,9 @@ target/
 *.iws
 *.iml
 *.ipr
-
+# Ignore sensitive config
+application.properties
+.env
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
