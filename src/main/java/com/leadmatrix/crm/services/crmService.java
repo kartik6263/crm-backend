@@ -45,6 +45,8 @@ public class crmService {
     @Autowired
     private crmRespository crmRepository;
 
+    @Autowired
+    private JwtUtility jwtutil;
 
 
 
@@ -61,7 +63,7 @@ public class crmService {
         databaseCRM user = userOptional.get();
 
         if (passwordEncoder.matches(password, user.getPassword())) {
-            String token = JwtUtility.generateToken(user.getEmail());
+            String token = jwtutil.generateToken(user.getEmail());
             return "Login  Successfull. Token:" + token;
         } else {
             return "Invalid Password";
