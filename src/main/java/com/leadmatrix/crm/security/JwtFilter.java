@@ -1,10 +1,10 @@
 package com.leadmatrix.crm.security;
 
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,32 +17,14 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-// dependencies
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private JwtUtility jwtUtil;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtility jwtUtil;
 
-    // constructor injuction
     public JwtFilter(UserDetailsService userDetailsService, JwtUtility jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }
 
-    /*public String extractEmail(String token) {
-        return extractAllClaims(token).getSubject();
-    }
-
-    public boolean validate(String token) {
-        try {
-            extractEmail(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }*/
-
-// filiter method
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -50,16 +32,23 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String path = request.getRequestURI();
+        String method = request.getMethod();
 
-        // ✅ Allow public APIs
+        // ✅ Allow preflight (CORS fix)
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // ✅ Public APIs
         if (path.contains("/login") || path.contains("/register")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-
         String authHeader = request.getHeader("Authorization");
 
+        // ✅ No token → allow request (securityConfig handle karega)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -70,8 +59,9 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String email = jwtUtil.extractEmail(token);
 
-            // ✅ only ONE validation
-            if (email != null && jwtUtil.validate(token)) {
+            if (email != null
+                    && SecurityContextHolder.getContext().getAuthentication() == null
+                    && jwtUtil.validate(token)) {
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
@@ -91,7 +81,5 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-
     }
-
 }

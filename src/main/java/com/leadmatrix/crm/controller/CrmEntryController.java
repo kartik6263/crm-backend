@@ -27,22 +27,23 @@ public class CrmEntryController {
         return "done";
     }
 
-      @Autowired
-       private  crmRespository crmRespository;
+    @Autowired
+    private crmRespository crmRespository;
 
-       @Autowired
-       private crmService CrmService;
-/// ///////////
-      @PostMapping("/register")
-      public String registerUser(@RequestBody databaseCRM  user) {
-          CrmService.registerUser(user);
-          return "User Registered Successfully";
-      }
+    @Autowired
+    private crmService CrmService;
+
+    /// ///////////
+    @PostMapping("/register")
+    public String registerUser(@RequestBody databaseCRM user) {
+        CrmService.registerUser(user);
+        return "User Registered Successfully";
+    }
 
 
-     private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
     private final JwtUtility jwtUtil;
-   // private final crmRespository crmRespository;
+    // private final crmRespository crmRespository;
 
     public CrmEntryController(AuthenticationManager authenticationManager,
                               JwtUtility jwtUtil,
@@ -70,12 +71,14 @@ public class CrmEntryController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
 
+        System.out.println("LOGIN HIT: " + request.getEmail());
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
         databaseCRM user = crmRespository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found in DB"));
 
         String token = jwtUtil.generateToken(user.getEmail());
 
