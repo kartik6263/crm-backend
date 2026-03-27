@@ -16,7 +16,7 @@ import com.leadmatrix.crm.services.crmService;
 
 @RestController
 @RequestMapping("/api/crm")
-@CrossOrigin
+@CrossOrigin(origins = "https://spiffy-boba-421b79.netlify.app")
 public class CrmEntryController {
 
     private final Logger log =
