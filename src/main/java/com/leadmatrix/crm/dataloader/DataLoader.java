@@ -1,4 +1,4 @@
-package com.leadmatrix.crm.dataloader;
+/*package com.leadmatrix.crm.dataloader;
 
 import com.leadmatrix.crm.entity.databaseCRM;
 import com.leadmatrix.crm.respository.crmRespository;
@@ -32,4 +32,4 @@ public class DataLoader {
             System.out.println("Admin user created");
         }
     }
-}
+}*/
