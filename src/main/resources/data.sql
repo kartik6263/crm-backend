@@ -1,4 +1,4 @@
-/*insert into users (name, email, phone, password, role, company_id)
+insert into users (name, email, phone, password, role, company_id)
 values (
            'Admin',
            'admin@gmail.com',
@@ -7,4 +7,4 @@ values (
            'ADMIN',
            1
        )
-    on conflict (email) do nothing; */
+    on conflict (email) do nothing;
