@@ -1,4 +1,4 @@
-package com.leadmatrix.crm.configuration;
+/*package com.leadmatrix.crm.configuration;
 
 import com.leadmatrix.crm.entity.databaseCRM;
 import com.leadmatrix.crm.respository.crmRespository;
@@ -27,4 +27,4 @@ public class AdminSeeder {
             }
         };
     }
-}
+} */
