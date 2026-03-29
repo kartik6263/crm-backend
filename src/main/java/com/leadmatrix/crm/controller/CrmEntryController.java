@@ -16,7 +16,6 @@ import com.leadmatrix.crm.services.crmService;
 
 @RestController
 @RequestMapping("/api/crm")
-@CrossOrigin(origins = "https://spiffy-boba-421b79.netlify.app")
 public class CrmEntryController {
 
     private final Logger log =
@@ -52,20 +51,6 @@ public class CrmEntryController {
         this.jwtUtil = jwtUtil;
         this.crmRespository = crmRespository;
     }
-    /*public CrmEntryController(AuthenticationManager authenticationManager, JwtUtility jwtUtil) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-    }
-
-    @PostMapping("/login")
-     public String login(@RequestBody LoginRequest user) {
-         authenticationManager.authenticate(
-                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
-         );
-
-        String token = jwtUtil.generateToken(user.getEmail());
-        return "Login Successful. Token: " + token;
-     }*/
 
 
     @PostMapping("/login")

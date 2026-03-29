@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -35,16 +36,19 @@ public class JwtFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         // ✅ Allow preflight (CORS fix)
-        if ("OPTIONS".equalsIgnoreCase(method)) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) ||
+                path.equals("/api/crm/login") ||
+                path.equals("/api/crm/register") ||
+                path.equals("/actuator/health")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // ✅ Public APIs
-        if (path.contains("/login") || path.contains("/register")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        //if (path.contains("/login") || path.contains("/register")) {
+          //  filterChain.doFilter(request, response);
+          //  return;
+        //}
 
         String authHeader = request.getHeader("Authorization");
 
@@ -59,6 +63,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String email = jwtUtil.extractEmail(token);
 
+
             if (email != null
                     && SecurityContextHolder.getContext().getAuthentication() == null
                     && jwtUtil.validate(token)) {
@@ -72,8 +77,10 @@ public class JwtFilter extends OncePerRequestFilter {
                                 userDetails.getAuthorities()
                         );
 
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

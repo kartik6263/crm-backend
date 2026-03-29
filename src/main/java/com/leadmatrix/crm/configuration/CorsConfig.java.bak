@@ -1,4 +1,4 @@
-package com.leadmatrix.crm.configuration;
+/*package com.leadmatrix.crm.configuration;
 
 
 import org.springframework.context.annotation.Bean;
@@ -22,4 +22,4 @@ public class CorsConfig {
             }
         };
     }
-}
+} */
