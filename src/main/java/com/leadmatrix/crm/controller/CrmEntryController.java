@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.SecurityProperties;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +54,7 @@ public class CrmEntryController {
     }
 
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
 
         System.out.println("LOGIN START: " + request.getEmail());
@@ -74,6 +75,32 @@ public class CrmEntryController {
         System.out.println("TOKEN GENERATED");
 
         return new LoginResponse(token, user.getRole(), user.getEmail());
+    }*/
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            System.out.println("LOGIN START: " + request.getEmail());
+
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+            System.out.println("AUTH SUCCESS");
+
+            databaseCRM user = crmRespository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found in DB"));
+            System.out.println("USER FETCHED: " + user.getEmail());
+
+            // TEMP TEST: token generation skip
+            return ResponseEntity.ok("LOGIN SUCCESS WITHOUT TOKEN");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("LOGIN FAILED: " + e.getClass().getName() + " - " + e.getMessage());
+        }
     }
 }
 
