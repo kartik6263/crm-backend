@@ -56,19 +56,24 @@ public class CrmEntryController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
 
-        System.out.println("LOGIN HIT: " + request.getEmail());
+        System.out.println("LOGIN START: " + request.getEmail());
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
+        System.out.println("AUTH SUCCESS");
+
         databaseCRM user = crmRespository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found in DB"));
 
+        System.out.println("USER FETCHED: " + user.getEmail());
+
         String token = jwtUtil.generateToken(user.getEmail());
+
+        System.out.println("TOKEN GENERATED");
 
         return new LoginResponse(token, user.getRole(), user.getEmail());
     }
-
 }
 
