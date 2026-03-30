@@ -54,7 +54,7 @@ public class CrmEntryController {
     }
 
 
-    /*@PostMapping("/login")
+    @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
 
         System.out.println("LOGIN START: " + request.getEmail());
@@ -75,9 +75,9 @@ public class CrmEntryController {
         System.out.println("TOKEN GENERATED");
 
         return new LoginResponse(token, user.getRole(), user.getEmail());
-    }*/
+    }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             System.out.println("LOGIN START: " + request.getEmail());
@@ -101,6 +101,6 @@ public class CrmEntryController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("LOGIN FAILED: " + e.getClass().getName() + " - " + e.getMessage());
         }
-    }
+    }*/
 }
 
