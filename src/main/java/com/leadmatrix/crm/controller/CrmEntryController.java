@@ -103,7 +103,7 @@ public class CrmEntryController {
         }
     }*/
 
-    @PostMapping("/login")
+   /* @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             authenticationManager.authenticate(
@@ -130,6 +130,25 @@ public class CrmEntryController {
             return ResponseEntity.status(500)
                     .body("LOGIN ERROR: " + e.getClass().getName() + " - " + e.getMessage());
         }
+    }*/
+
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest request) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        databaseCRM user = crmRespository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found in DB"));
+
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return new LoginResponse(token, user.getRole(), user.getEmail());
     }
+
 }
 
