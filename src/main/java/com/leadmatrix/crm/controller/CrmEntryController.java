@@ -54,7 +54,7 @@ public class CrmEntryController {
     }
 
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
 
         System.out.println("LOGIN START: " + request.getEmail());
@@ -75,7 +75,7 @@ public class CrmEntryController {
         System.out.println("TOKEN GENERATED");
 
         return new LoginResponse(token, user.getRole(), user.getEmail());
-    }
+    }*/
 
     /*@PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -102,5 +102,34 @@ public class CrmEntryController {
             return ResponseEntity.status(500).body("LOGIN FAILED: " + e.getClass().getName() + " - " + e.getMessage());
         }
     }*/
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+
+            databaseCRM user = crmRespository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found in DB"));
+
+            try {
+                String token = jwtUtil.generateToken(user.getEmail());
+                return ResponseEntity.ok(new LoginResponse(token, user.getRole(), user.getEmail()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(500)
+                        .body("TOKEN ERROR: " + e.getClass().getName() + " - " + e.getMessage());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body("LOGIN ERROR: " + e.getClass().getName() + " - " + e.getMessage());
+        }
+    }
 }
 
