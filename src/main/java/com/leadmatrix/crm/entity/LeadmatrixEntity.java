@@ -42,6 +42,7 @@ public class LeadmatrixEntity {
     private Long companyId;
     private String createdDate;
     private  int score;
+
 /// ////////////////////////////////////////////////////////////////
     private String lastActivity;
 
