@@ -58,7 +58,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of(
-                "https://spiffy-boba-421b79.netlify.app",
+                "https://crm-ev4.pages.dev",
+                //"https://spiffy-boba-421b79.netlify.app",
                 "http://localhost:5500",
                 "http://127.0.0.1:5500"
         ));
