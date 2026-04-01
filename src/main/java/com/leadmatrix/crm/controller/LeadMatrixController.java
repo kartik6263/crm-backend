@@ -224,19 +224,39 @@ public class LeadMatrixController {
     }
 
     @GetMapping("/dashboard/customers")
-    public long convertedLeads(){
+    public long totalCustomer(){
         return leadmatrixRepository.countByStatus("Customer");
     }
 
     @GetMapping("/dashboard/lost")
-    public long lostLeads(){
+    public long totalLost(){
         return leadmatrixRepository.countByStatus("Lost");
+    }
+
+    @GetMapping("/dashboard/contacted")
+    public long totalContacted() {
+        return leadmatrixRepository.countByStatus("CONTACTED");
+    }
+
+    @GetMapping("/dashboard/qualified")
+    public long totalQualified() {
+        return leadmatrixRepository.countByStatus("QUALIFIED");
     }
 
     @GetMapping("/dashboard/sales-performance")
     public long salesPerformance(@RequestParam String email){
-
         return leadmatrixRepository.countByAssignedTo(email);
+    }
+
+    @GetMapping("/dashboard/source-summary")
+    public ResponseEntity<?> sourceSummary() {
+        return ResponseEntity.ok(
+                java.util.Map.of(
+                        "facebook", leadmatrixRepository.countBySource("Facebook"),
+                        "website", leadmatrixRepository.countBySource("Website"),
+                        "referral", leadmatrixRepository.countBySource("Referral")
+                )
+        );
     }
 
 
