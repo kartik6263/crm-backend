@@ -57,8 +57,19 @@ public class LeadMatrixController {
         if (lead.getStatus() == null || lead.getStatus().isEmpty()) {
             lead.setStatus("NEW");
         }
-        return ResponseEntity.ok(leadServices.saveLead(lead));
+        LeadmatrixEntity saved = leadServices.saveLead(lead);
+
+        if (saved.getAssignedTo() != null && !saved.getAssignedTo().isEmpty()) {
+            emailService.sendEmail(
+                    saved.getAssignedTo(),
+                    "New Lead Assigned",
+                    "A new lead has been assigned to you: " + saved.getName()
+            );
+        }
+
+        return ResponseEntity.ok(saved);
     }
+
 
     // Get All Leads
     @GetMapping("/all")
