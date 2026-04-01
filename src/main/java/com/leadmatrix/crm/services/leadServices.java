@@ -55,6 +55,10 @@ public class leadServices {
             oldLead.setName(newLead.getName());
             oldLead.setEmail(newLead.getEmail());
             oldLead.setPhone(newLead.getPhone());
+            oldLead.setSource(newLead.getSource());
+            oldLead.setAssignedTo(newLead.getAssignedTo());
+            oldLead.setStatus(newLead.getStatus());
+            oldLead.setLastActivity(newLead.getLastActivity());
             return leadmatrixRespository.save(oldLead);
         }
 

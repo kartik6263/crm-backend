@@ -9,5 +9,6 @@ public interface ReminderRepository
         extends JpaRepository<LeadReminder,Long> {
 
     List<LeadReminder> findByReminderDate(String reminderDate);
+    List<LeadReminder> findByLeadId(Long leadId);
 
 }

@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -32,27 +33,53 @@ import java.util.List;
 public class LeadMatrixController {
 
 
+    @Autowired
+    private leadServices leadServices;
 
     @Autowired
     private LeadmatrixRespository leadmatrixRepository;
 
+    @Autowired
+    private LeadNoteRepository leadNoteRepository;
+
+    @Autowired
+    private ReminderRepository reminderRepository;
+
+    @Autowired
+    private ActivityRepository activityRepository;
+
+    @Autowired
+    private EmailService emailService;
+
     // Add Lead  ///////////////////////////////////
     @PostMapping("/add")
-    public String addLead(@RequestBody LeadmatrixEntity lead) {
-        leadmatrixRepository.save(lead);
-        return "Lead Added Successfully";
+    public ResponseEntity<?> createLead(@RequestBody LeadmatrixEntity lead) {
+        if (lead.getStatus() == null || lead.getStatus().isEmpty()) {
+            lead.setStatus("NEW");
+        }
+        return ResponseEntity.ok(leadServices.saveLead(lead));
     }
 
     // Get All Leads
     @GetMapping("/all")
     public List<LeadmatrixEntity> getAllLeads() {
-        return leadmatrixRepository.findAll();
+        return leadServices.getAllLeads();
     }
 
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public LeadmatrixEntity getLeadById(@PathVariable Long id) {
         return leadmatrixRepository.findById(id).orElse(null);
+    }*/
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getLeadById(@PathVariable Long id) {
+        LeadmatrixEntity lead = leadServices.getLeadById(id);
+        if (lead == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(lead);
     }
+
+
 
     @GetMapping("/search/{name}")
     public List<LeadmatrixEntity> searchLead(@PathVariable String name) {
@@ -60,16 +87,12 @@ public class LeadMatrixController {
         return leadmatrixRepository.findByName(name);
     }
 
-    @PutMapping("/lead/status/{id}")
+    /*@PutMapping("/lead/status/{id}")
     public LeadmatrixEntity updateLeadStatus(@PathVariable Long id,
                                              @RequestParam String status) {
-
         LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElse(null);
-
         if (lead == null) return null;
-
         lead.setStatus(status);
-
         if (status.equalsIgnoreCase("CUSTOMER")) {
             emailService.sendEmail(
                     "admin@gmail.com",
@@ -77,39 +100,44 @@ public class LeadMatrixController {
                     "Lead " + lead.getName() + " has been converted to CUSTOMER"
             );
         }
-
         return leadmatrixRepository.save(lead);
+    }*/
+    @PutMapping("/lead/status/{id}")
+    public ResponseEntity<?> updateLeadStatus(@PathVariable Long id, @RequestParam String status) {
+        LeadmatrixEntity lead = leadServices.getLeadById(id);
+        if (lead == null) {
+            return ResponseEntity.notFound().build();
+        }
+        lead.setStatus(status);
+        leadmatrixRepository.save(lead);
 
+        if ("CUSTOMER".equalsIgnoreCase(status) && lead.getEmail() != null && !lead.getEmail().isEmpty()) {
+            emailService.sendEmail(
+                    lead.getEmail(),
+                    "Congratulations",
+                    "Thank you for becoming our customer."
+            );
+        }
+        return ResponseEntity.ok("Lead status updated successfully");
     }
 
     @PostMapping("/lead/upload/{id}")
     public String uploadFile(@PathVariable Long id,
                              @RequestParam("file") MultipartFile file) {
-
         try {
-
             LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElse(null);
-
             if (lead == null) {
                 return "Lead not found";
             }
-
             String fileName = file.getOriginalFilename();
-
             Path path = Paths.get("uploads/" + fileName);
-
             Files.write(path, file.getBytes());
-
             lead.setDocument(fileName);
-
             leadmatrixRepository.save(lead);
-
             return "File uploaded";
 
         } catch (Exception e) {
-
             return "Upload failed";
-
         }
     }
 
@@ -144,27 +172,21 @@ public class LeadMatrixController {
     public long leadsBySource(@RequestParam String source){
 
         return leadmatrixRepository.countBySource(source);
-
     }
 
     @GetMapping("/report/sales")
     public long salePerformance(@RequestParam String email){
 
         return leadmatrixRepository.countByAssignedTo(email);
-
     }
 
     @GetMapping("/report/date")
     public long leadsByDate(@RequestParam String date){
 
         return leadmatrixRepository.countByCreatedDate(date);
-
     }
 
 
-
-    @Autowired
-    private EmailService emailService;
 
     @PutMapping("/lead/assign/{id}")
     public LeadmatrixEntity assignLead(@PathVariable Long id,
@@ -219,8 +241,7 @@ public class LeadMatrixController {
 
 
 
-    @Autowired
-    private leadServices LeadServices;
+
 
 // get lead by company
     @GetMapping("/company/leads/{companyId}")
@@ -232,57 +253,61 @@ public class LeadMatrixController {
     // Register Lead ////////////////////////////////////////////////////////////
     @PostMapping("/registerlead")
     public LeadmatrixEntity registerLead(@RequestBody LeadmatrixEntity lead) {
-        return LeadServices.saveLead(lead);
+        return leadServices.saveLead(lead);
     }
 
     // Get Lead By Id
     @GetMapping("/lead/{id}")
     public LeadmatrixEntity getLead(@PathVariable Long id) {
-        return LeadServices.getLeadById(id);
+        return leadServices.getLeadById(id);
     }
 
     // Delete Lead
     @DeleteMapping("/delete/{id}")
-    public String deleteLead(@PathVariable Long id) {
-        LeadServices.deleteLead(id);
-        return "Lead Deleted Successfully";
-    }
-
+        public ResponseEntity<?> deleteLead(@PathVariable Long id) {
+            leadServices.deleteLead(id);
+            return ResponseEntity.ok("Lead deleted successfully");
+        }
     // Update Lead ////////////////////////////////////////////////////////////////////
-    @PutMapping("/update/{id}")
+    /*@PutMapping("/update/{id}")
     public LeadmatrixEntity updateLead(@PathVariable Long id, @RequestBody LeadmatrixEntity lead) {
         return LeadServices.updateLead(id, lead);
+    }*/
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateLead(@PathVariable Long id, @RequestBody LeadmatrixEntity newLead) {
+        LeadmatrixEntity updated = leadServices.updateLead(id, newLead);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
     }
 
 
 
 
 
-    @Autowired
-    private ActivityRepository activityRepository;
-
     @PostMapping("/lead/activity")///  ////////////////////
-    public LeadActivity addActivity(@RequestBody LeadActivity activity){
-
-        return activityRepository.save(activity);
-
+    public ResponseEntity<?> addActivity(@RequestBody LeadActivity activity) {
+        activity.setActivityDate(LocalDate.now().toString());
+        return ResponseEntity.ok(activityRepository.save(activity));
     }
 
     @GetMapping("/lead/activity/{leadId}")
-    public List<LeadActivity> getLeadActivity(@PathVariable Long leadId){
+    public List<LeadActivity> getLeadActivityByLeadId(@PathVariable Long leadId){
 
         return activityRepository.findByLeadId(leadId);
 
     }
 
 
-    @Autowired
-    private ReminderRepository reminderRepository;
-
     @PostMapping("/lead/reminder")/// //////////////////////////////
-    public LeadReminder addReminder(@RequestBody LeadReminder reminder){
+    public ResponseEntity<?> addReminder(@RequestBody LeadReminder reminder) {
+        return ResponseEntity.ok(reminderRepository.save(reminder));
+    }
 
-        return reminderRepository.save(reminder);
+    @GetMapping("/lead/reminder/{leadId}")
+    public List<LeadReminder> getReminderByLeadId(@PathVariable Long leadId) {
+        return reminderRepository.findByLeadId(leadId);
     }
 
     @GetMapping("/lead/reminder/{date}")
@@ -292,17 +317,15 @@ public class LeadMatrixController {
     }
 
 
-    @Autowired
-    private LeadNoteRepository leadNoteRepository;
 
     @PostMapping("/lead/note")/// //////////////////////////////////
-    public LeadNote addNote(@RequestBody LeadNote note){
-
-        return leadNoteRepository.save(note);
+    public ResponseEntity<?> addNote(@RequestBody LeadNote note) {
+        note.setCreatedDate(LocalDate.now().toString());
+        return ResponseEntity.ok(leadNoteRepository.save(note));
     }
 
     @GetMapping("/lead/note/{leadId}")
-    public List<LeadNote> getNotes(@PathVariable Long leadId){
+    public List<LeadNote> getNotesByLeadId(@PathVariable Long leadId){
 
         return leadNoteRepository.findByLeadId(leadId);
     }
