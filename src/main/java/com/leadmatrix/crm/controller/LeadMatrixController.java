@@ -168,16 +168,6 @@ public class LeadMatrixController {
         return leadmatrixRepository.findByStatus(status);
     }
 
-    @GetMapping("/report/conversion-rate")
-    public double conversionRate(){
-
-        long total = leadmatrixRepository.count();
-
-        long customers = leadmatrixRepository.countByStatus("CUSTOMER");
-
-        return (customers * 100.0) / total;
-
-    }
 
     @GetMapping("/report/source")
     public long leadsBySource(@RequestParam String source){
@@ -258,6 +248,17 @@ public class LeadMatrixController {
     public long salesPerformance(@RequestParam String email){
         return leadmatrixRepository.countByAssignedTo(email);
     }
+
+    @GetMapping("/dashboard/conversion-rate")
+    public double conversionRate() {
+        long total = leadmatrixRepository.count();
+        long customers = leadmatrixRepository.countByStatus("CUSTOMER");
+        if (total == 0) {
+            return 0;
+        }
+        return (customers * 100.0) / total;
+    }
+
 
     @GetMapping("/dashboard/source-summary")
     public ResponseEntity<?> sourceSummary() {
@@ -342,8 +343,7 @@ public class LeadMatrixController {
     }
 
     @GetMapping("/lead/reminder/{date}")
-    public List<LeadReminder> getReminders(@PathVariable String date){
-
+    public List<LeadReminder> getRemindersByDate(@PathVariable String date){
         return reminderRepository.findByReminderDate(date);
     }
 
