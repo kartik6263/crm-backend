@@ -1,14 +1,8 @@
 package com.leadmatrix.crm.controller;
 
 
-import com.leadmatrix.crm.entity.LeadActivity;
-import com.leadmatrix.crm.entity.LeadNote;
-import com.leadmatrix.crm.entity.LeadReminder;
-import com.leadmatrix.crm.entity.LeadmatrixEntity;
-import com.leadmatrix.crm.respository.ActivityRepository;
-import com.leadmatrix.crm.respository.LeadNoteRepository;
-import com.leadmatrix.crm.respository.LeadmatrixRespository;
-import com.leadmatrix.crm.respository.ReminderRepository;
+import com.leadmatrix.crm.entity.*;
+import com.leadmatrix.crm.respository.*;
 import com.leadmatrix.crm.services.EmailService;
 import com.leadmatrix.crm.services.ExcelLeadService;
 import com.leadmatrix.crm.services.TwilioService;
@@ -35,6 +29,9 @@ public class LeadMatrixController {
 
     @Autowired
     private leadServices leadServices;
+
+    @Autowired
+    private crmRespository crmRespository;
 
     @Autowired
     private LeadmatrixRespository leadmatrixRepository;
@@ -254,6 +251,25 @@ public class LeadMatrixController {
     @GetMapping("/report/date")
     public long dateReport(@RequestParam String date) {
         return leadmatrixRepository.countByCreatedDate(date);
+    }
+
+    @GetMapping("/report/top-sales")
+    public ResponseEntity<?> topSales() {
+        List<databaseCRM> users = crmRespository.findAll();
+        String topEmail = "";
+        long max = 0;
+
+        for (databaseCRM user : users) {
+            long count = leadmatrixRepository.countByAssignedTo(user.getEmail());
+            if (count > max) {
+                max = count;
+                topEmail = user.getEmail();
+            }
+        }
+        return ResponseEntity.ok(java.util.Map.of(
+                "email", topEmail,
+                "count", max
+        ));
     }
 
 

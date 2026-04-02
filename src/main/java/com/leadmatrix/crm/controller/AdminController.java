@@ -89,5 +89,10 @@ public class AdminController {
         return ResponseEntity.ok(crmService.registerUser(user));
     }
 
+    @GetMapping("/users")
+    public List<databaseCRM> getAllUsers() {
+        return CrmRespository.findAll();
+    }
+
 
 }
