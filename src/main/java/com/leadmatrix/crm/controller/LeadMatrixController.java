@@ -16,6 +16,7 @@ import com.leadmatrix.crm.services.leadServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.core.metrics.DefaultApplicationStartup;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,14 +60,23 @@ public class LeadMatrixController {
         }
         LeadmatrixEntity saved = leadServices.saveLead(lead);
 
+        saveActivity(
+                saved.getId(),
+                "LEAD_CREATED",
+                "Lead created: " + saved.getName()
+        );
         if (saved.getAssignedTo() != null && !saved.getAssignedTo().isEmpty()) {
             emailService.sendEmail(
                     saved.getAssignedTo(),
                     "New Lead Assigned",
                     "A new lead has been assigned to you: " + saved.getName()
             );
+            saveActivity(
+                    saved.getId(),
+                    "LEAD_ASSIGNED",
+                    "Lead assigned to: " + saved.getAssignedTo()
+            );
         }
-
         return ResponseEntity.ok(saved);
     }
 
@@ -88,6 +98,18 @@ public class LeadMatrixController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(lead);
+    }
+
+
+// updatelead status()
+    private void saveActivity(Long leadId, String type, String description) {
+        LeadActivity activity = new LeadActivity();
+        activity.setLeadId(leadId);
+        activity.setActivityType(type);
+        activity.setDescription(description);
+        activity.setActivityDate(java.time.LocalDate.now().toString());
+        activityRepository.save(activity);
+// want to create lead()
     }
 
 
@@ -119,8 +141,15 @@ public class LeadMatrixController {
         if (lead == null) {
             return ResponseEntity.notFound().build();
         }
+        String oldstatus = lead.getStatus();
         lead.setStatus(status);
         leadmatrixRepository.save(lead);
+
+        saveActivity(
+                lead.getId(),
+                "STATUS_CHANGED",
+                "Status changed from" + oldstatus + "to" + status
+        );
 
         if ("CUSTOMER".equalsIgnoreCase(status) && lead.getEmail() != null && !lead.getEmail().isEmpty()) {
             emailService.sendEmail(
@@ -132,7 +161,9 @@ public class LeadMatrixController {
         return ResponseEntity.ok("Lead status updated successfully");
     }
 
-    @PostMapping("/lead/upload/{id}")
+
+
+    /*@PostMapping("/lead/upload/{id}")
     public String uploadFile(@PathVariable Long id,
                              @RequestParam("file") MultipartFile file) {
         try {
@@ -150,7 +181,39 @@ public class LeadMatrixController {
         } catch (Exception e) {
             return "Upload failed";
         }
+    }*/
+    @PostMapping("/lead/upload/{id}")
+    public ResponseEntity<?> uploadDocument(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            LeadmatrixEntity lead = leadServices.getLeadById(id);
+            if (lead == null) {
+                return ResponseEntity.notFound().build();
+            }
+            String fileName = file.getOriginalFilename();
+            java.nio.file.Path uploadPath = java.nio.file.Paths.get("uploads");
+
+            if (!java.nio.file.Files.exists(uploadPath)) {
+                java.nio.file.Files.createDirectories(uploadPath);
+            }
+            java.nio.file.Files.copy(
+                    file.getInputStream(),
+                    uploadPath.resolve(fileName),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            );
+            lead.setDocument(fileName);
+            leadmatrixRepository.save(lead);
+
+            saveActivity(
+                    id,
+                    "DOCUMENT_UPLOADED",
+                    "Document uploaded: " + fileName
+            );
+            return ResponseEntity.ok("Document uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Upload failed: " + e.getMessage());
+        }
     }
+
 
     @GetMapping("/lead/document/{filename}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) throws Exception {
@@ -189,12 +252,10 @@ public class LeadMatrixController {
 
 
 
-    @PutMapping("/lead/assign/{id}")
+   /* @PutMapping("/lead/assign/{id}")
     public LeadmatrixEntity assignLead(@PathVariable Long id,
                                        @RequestParam String salesEmail) {
-
-        LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElse(null);
-
+          LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElse(null);
         if (lead != null) {
             lead.setAssignedTo(salesEmail);
             emailService.sendEmail(
@@ -205,7 +266,37 @@ public class LeadMatrixController {
             return leadmatrixRepository.save(lead);
         }
         return null;
+    }*/
+
+    @PutMapping("/lead/assign/{id}")
+    public ResponseEntity<?> assignLead(@PathVariable Long id, @RequestParam String salesEmail) {
+        LeadmatrixEntity lead = leadServices.getLeadById(id);
+
+        if (lead == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        lead.setAssignedTo(salesEmail);
+        leadmatrixRepository.save(lead);
+
+        saveActivity(
+                lead.getId(),
+                "LEAD_ASSIGNED",
+                "Lead assigned to" + salesEmail
+        );
+
+        if (salesEmail != null && !salesEmail.isEmpty()) {
+            emailService.sendEmail(
+                    salesEmail,
+                    "New Lead Assigned",
+                    "Lead assigned to you: " + lead.getName()
+            );
+        }
+        return ResponseEntity.ok("Lead assigned successfully");
     }
+
+
+
 
 
 
@@ -244,9 +335,18 @@ public class LeadMatrixController {
         return leadmatrixRepository.countByStatus("QUALIFIED");
     }
 
-    @GetMapping("/dashboard/sales-performance")
+
+
+    /*@GetMapping("/dashboard/sales-performance")
     public long salesPerformance(@RequestParam String email){
         return leadmatrixRepository.countByAssignedTo(email);
+    }*/
+    @GetMapping("/dashboard/sales-performance")
+    public long salesPerformance(@RequestParam String email) {
+        return leadmatrixRepository.findByAssignedTo(email)
+                .stream()
+                .filter(l -> "CUSTOMER".equalsIgnoreCase(l.getStatus()))
+                .count();
     }
 
     @GetMapping("/dashboard/conversion-rate")
@@ -259,7 +359,6 @@ public class LeadMatrixController {
         return (customers * 100.0) / total;
     }
 
-
     @GetMapping("/dashboard/source-summary")
     public ResponseEntity<?> sourceSummary() {
         return ResponseEntity.ok(
@@ -270,6 +369,36 @@ public class LeadMatrixController {
                 )
         );
     }
+
+
+
+
+
+
+    @GetMapping("/report/conversion-rate")
+    public double conversionRateReport() {
+        long total = leadmatrixRepository.count();
+        long customers = leadmatrixRepository.countByStatus("CUSTOMER");
+
+        if (total == 0) return 0;
+        return (customers * 100.0) / total;
+    }
+
+    @GetMapping("/report/source")
+    public long sourceReport(@RequestParam String source) {
+        return leadmatrixRepository.countBySource(source);
+    }
+
+    @GetMapping("/report/sales")
+    public long salesReport(@RequestParam String email) {
+        return leadmatrixRepository.countByAssignedTo(email);
+    }
+
+    @GetMapping("/report/date")
+    public long dateReport(@RequestParam String date) {
+        return leadmatrixRepository.countByCreatedDate(date);
+    }
+
 
 
 
@@ -305,15 +434,28 @@ public class LeadMatrixController {
     public LeadmatrixEntity updateLead(@PathVariable Long id, @RequestBody LeadmatrixEntity lead) {
         return LeadServices.updateLead(id, lead);
     }*/
-    @PutMapping("/update/{id}")
+    /*@PutMapping("/update/{id}")
     public ResponseEntity<?> updateLead(@PathVariable Long id, @RequestBody LeadmatrixEntity newLead) {
         LeadmatrixEntity updated = leadServices.updateLead(id, newLead);
         if (updated == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updated);
+    }*/
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateLead(@PathVariable Long id, @RequestBody LeadmatrixEntity newLead) {
+        LeadmatrixEntity oldLead = leadServices.getLeadById(id);
+        if (oldLead == null) {
+            return ResponseEntity.notFound().build();
+        }
+        LeadmatrixEntity updated = leadServices.updateLead(id, newLead);
+        saveActivity(
+                id,
+                "LEAD_UPDATED",
+                "Lead updated: " + updated.getName()
+        );
+        return ResponseEntity.ok(updated);
     }
-
 
 
 
@@ -334,6 +476,13 @@ public class LeadMatrixController {
 
     @PostMapping("/lead/reminder")/// //////////////////////////////
     public ResponseEntity<?> addReminder(@RequestBody LeadReminder reminder) {
+        LeadReminder saved = reminderRepository.save(reminder);
+
+        saveActivity(
+                saved.getLeadId(),
+                "REMINDER_ADDED",
+                "Reminder added for date " + saved.getReminderDate()
+        );
         return ResponseEntity.ok(reminderRepository.save(reminder));
     }
 
@@ -349,9 +498,18 @@ public class LeadMatrixController {
 
 
 
+
+
     @PostMapping("/lead/note")/// //////////////////////////////////
     public ResponseEntity<?> addNote(@RequestBody LeadNote note) {
-        note.setCreatedDate(LocalDate.now().toString());
+        note.setCreatedDate(java.time.LocalDate.now().toString());
+        LeadNote saved = leadNoteRepository.save(note);
+
+        saveActivity(
+                saved.getLeadId(),
+                "NOTE_ADDED",
+                "Note added for lead"
+        );
         return ResponseEntity.ok(leadNoteRepository.save(note));
     }
 
@@ -396,6 +554,10 @@ public class LeadMatrixController {
             );
             return "Message Sent";
         }
+
+
+
+
     }
 
 

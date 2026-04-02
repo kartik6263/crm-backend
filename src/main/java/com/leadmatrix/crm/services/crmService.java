@@ -75,7 +75,7 @@ public class crmService {
        // @Autowired
        // private BCryptPasswordEncoder passwordEncoder;
 
-        public String registerUser (databaseCRM user){
+        public String registerUser(databaseCRM user){
             Optional<databaseCRM> existingUser = crmRepository.findByEmail(user.getEmail());
 
             if (existingUser.isPresent()) {

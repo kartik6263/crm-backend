@@ -2,12 +2,13 @@ package com.leadmatrix.crm.controller;
 
 import com.leadmatrix.crm.entity.Company;
 import com.leadmatrix.crm.entity.Subscription;
+import com.leadmatrix.crm.entity.databaseCRM;
 import com.leadmatrix.crm.respository.*;
+import com.leadmatrix.crm.services.crmService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +79,14 @@ public class AdminController {
 
         return map;
 
+    }
+
+    @Autowired
+    private crmService crmService;
+
+    @PostMapping("/create-user")
+    public ResponseEntity<?> createUser(@RequestBody databaseCRM user) {
+        return ResponseEntity.ok(crmService.registerUser(user));
     }
 
 
