@@ -149,7 +149,6 @@ public class LeadMatrixController {
                 "STATUS_CHANGED",
                 "Status changed from" + oldstatus + "to" + status
         );
-
         if ("CUSTOMER".equalsIgnoreCase(status) && lead.getEmail() != null && !lead.getEmail().isEmpty()) {
             emailService.sendEmail(
                     lead.getEmail(),
@@ -231,21 +230,29 @@ public class LeadMatrixController {
     }
 
 
-    @GetMapping("/report/source")
-    public long leadsBySource(@RequestParam String source){
 
+
+    @GetMapping("/report/conversion-rate")
+    public double conversionRateReport() {
+        long total = leadmatrixRepository.count();
+        long customers = leadmatrixRepository.countByStatus("CUSTOMER");
+
+        if (total == 0) return 0;
+        return (customers * 100.0) / total;
+    }
+
+    @GetMapping("/report/source")
+    public long sourceReport(@RequestParam String source) {
         return leadmatrixRepository.countBySource(source);
     }
 
     @GetMapping("/report/sales")
-    public long salePerformance(@RequestParam String email){
-
+    public long salesReport(@RequestParam String email) {
         return leadmatrixRepository.countByAssignedTo(email);
     }
 
     @GetMapping("/report/date")
-    public long leadsByDate(@RequestParam String date){
-
+    public long dateReport(@RequestParam String date) {
         return leadmatrixRepository.countByCreatedDate(date);
     }
 
@@ -368,37 +375,6 @@ public class LeadMatrixController {
                 )
         );
     }
-
-
-
-
-
-
-    @GetMapping("/report/conversion-rate")
-    public double conversionRateReport() {
-        long total = leadmatrixRepository.count();
-        long customers = leadmatrixRepository.countByStatus("CUSTOMER");
-
-        if (total == 0) return 0;
-        return (customers * 100.0) / total;
-    }
-
-    @GetMapping("/report/source")
-    public long sourceReport(@RequestParam String source) {
-        return leadmatrixRepository.countBySource(source);
-    }
-
-    @GetMapping("/report/sales")
-    public long salesReport(@RequestParam String email) {
-        return leadmatrixRepository.countByAssignedTo(email);
-    }
-
-    @GetMapping("/report/date")
-    public long dateReport(@RequestParam String date) {
-        return leadmatrixRepository.countByCreatedDate(date);
-    }
-
-
 
 
 
