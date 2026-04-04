@@ -2,7 +2,11 @@ package com.leadmatrix.crm.controller;
 
 import com.leadmatrix.crm.services.PaymentService;
 
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -14,10 +18,23 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PostMapping("/create-order")
+   /* @PostMapping("/create-order")
     public String createOrder() throws Exception {
         return paymentService.createOrder();
-    }
+    }*/
+   @PostMapping("/create-order")
+   public ResponseEntity<?> createOrder() throws Exception {
+
+       RazorpayClient client = new RazorpayClient("KEY_ID", "KEY_SECRET");
+
+       JSONObject options = new JSONObject();
+       options.put("amount", 50000); // ₹500
+       options.put("currency", "INR");
+       options.put("receipt", "txn_123");
+
+       Order order = client.orders.create(options);
+       return ResponseEntity.ok(order.toString());
+   }
 
     @PostMapping("/success")
     public String paymentSuccess(@RequestParam Long companyId,

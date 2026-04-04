@@ -86,6 +86,9 @@ public class LeadMatrixController {
             if (lead.getName() == null || lead.getName().isBlank()) {
                 return ResponseEntity.badRequest().body("Name is required");
             }
+        if (lead.getEmail() != null && !lead.getEmail().isBlank() && !lead.getEmail().contains("@")) {
+            return ResponseEntity.badRequest().body("Invalid email");
+        }
 
             if (lead.getPhone() == null || lead.getPhone().isBlank()) {
                 return ResponseEntity.badRequest().body("Phone is required");
@@ -141,10 +144,37 @@ public class LeadMatrixController {
 
 
 
+    @GetMapping("/page")
+    public ResponseEntity<?> getLeadsPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        org.springframework.data.domain.Pageable pageable =
+                org.springframework.data.domain.PageRequest.of(page, size);
+
+        return ResponseEntity.ok(leadmatrixRepository.findAll(pageable));
+    }
+
+
+
     @GetMapping("/search/{name}")
     public List<LeadmatrixEntity> searchLead(@PathVariable String name) {
 
         return leadmatrixRepository.findByName(name);
+    }
+    @GetMapping("/filter")
+    public List<LeadmatrixEntity> filterLeads(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String source,
+            @RequestParam(required = false) String assignedTo
+    ) {
+        List<LeadmatrixEntity> leads = leadmatrixRepository.findAll();
+
+        return leads.stream()
+                .filter(l -> status == null || status.isBlank() || status.equalsIgnoreCase(l.getStatus()))
+                .filter(l -> source == null || source.isBlank() || source.equalsIgnoreCase(l.getSource()))
+                .filter(l -> assignedTo == null || assignedTo.isBlank() || assignedTo.equalsIgnoreCase(l.getAssignedTo()))
+                .toList();
     }
 
     /*@PutMapping("/lead/status/{id}")
