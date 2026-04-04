@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/leads")
@@ -52,6 +53,9 @@ public class LeadMatrixController {
     @Autowired
     private NotificationController notificationController;
 
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
 
 
     // Add Lead  ///////////////////////////////////
@@ -79,8 +83,29 @@ public class LeadMatrixController {
                     "Lead assigned to: " + saved.getAssignedTo()
             );
         }
-        return ResponseEntity.ok(saved);
-    }
+            if (lead.getName() == null || lead.getName().isBlank()) {
+                return ResponseEntity.badRequest().body("Name is required");
+            }
+
+            if (lead.getPhone() == null || lead.getPhone().isBlank()) {
+                return ResponseEntity.badRequest().body("Phone is required");
+            }
+
+            if (lead.getStatus() == null || lead.getStatus().isEmpty()) {
+                lead.setStatus("NEW");
+            }
+
+            if (lead.getSource() == null || lead.getSource().isBlank()) {
+                lead.setSource("Unknown");
+            }
+
+
+
+            saveActivity(saved.getId(), "LEAD_CREATED", "Lead created: " + saved.getName());
+
+            return ResponseEntity.ok(saved);
+        }
+
 
 
     // Get All Leads
@@ -278,6 +303,29 @@ public class LeadMatrixController {
                 "count", max
         ));
     }
+    @GetMapping("/report/team-performance")
+    public ResponseEntity<?> teamPerformance() {
+        List<databaseCRM> users = crmRespository.findAll();
+        List<java.util.Map<String, Object>> report = new java.util.ArrayList<>();
+
+        for (databaseCRM user : users) {
+            if ("USER".equalsIgnoreCase(user.getRole()) || "SALES".equalsIgnoreCase(user.getRole())) {
+                long assigned = leadmatrixRepository.countByAssignedTo(user.getEmail());
+                long customers = leadmatrixRepository.findByAssignedTo(user.getEmail())
+                        .stream()
+                        .filter(l -> "CUSTOMER".equalsIgnoreCase(l.getStatus()))
+                        .count();
+
+                java.util.Map<String, Object> row = new java.util.HashMap<>();
+                row.put("name", user.getName());
+                row.put("email", user.getEmail());
+                row.put("assigned", assigned);
+                row.put("customers", customers);
+                report.add(row);
+            }
+        }
+        return ResponseEntity.ok(report);
+    }
 
 
 
@@ -411,6 +459,11 @@ public class LeadMatrixController {
     public List<LeadmatrixEntity> companyLeads(@PathVariable Long companyId) {
 
         return leadmatrixRepository.findByCompanyId(companyId);
+    }
+    @GetMapping("/company/plan/{companyId}")
+    public ResponseEntity<?> getCompanyPlan(@PathVariable Long companyId) {
+        Optional<Subscription> sub = subscriptionRepository.findByCompanyId(companyId);
+        return ResponseEntity.ok(sub.orElse(null));
     }
 
     // Register Lead ////////////////////////////////////////////////////////////
