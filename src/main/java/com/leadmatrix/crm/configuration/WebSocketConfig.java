@@ -18,7 +18,6 @@ public class WebSocketConfig
         config.enableSimpleBroker("/topic");
 
         config.setApplicationDestinationPrefixes("/app");
-
     }
 
     @Override

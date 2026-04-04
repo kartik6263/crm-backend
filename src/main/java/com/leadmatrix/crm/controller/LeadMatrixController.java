@@ -1,6 +1,7 @@
 package com.leadmatrix.crm.controller;
 
 
+import com.leadmatrix.crm.dpo.ApiResponse;
 import com.leadmatrix.crm.entity.*;
 import com.leadmatrix.crm.respository.*;
 import com.leadmatrix.crm.services.EmailService;
@@ -47,6 +48,11 @@ public class LeadMatrixController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private NotificationController notificationController;
+
+
 
     // Add Lead  ///////////////////////////////////
     @PostMapping("/add")
@@ -133,10 +139,8 @@ public class LeadMatrixController {
     }*/
     @PutMapping("/lead/status/{id}")
     public ResponseEntity<?> updateLeadStatus(@PathVariable Long id, @RequestParam String status) {
-        LeadmatrixEntity lead = leadServices.getLeadById(id);
-        if (lead == null) {
-            return ResponseEntity.notFound().build();
-        }
+        LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElseThrow();
+
         String oldstatus = lead.getStatus();
         lead.setStatus(status);
         leadmatrixRepository.save(lead);
@@ -147,6 +151,9 @@ public class LeadMatrixController {
                 "Status changed from" + oldstatus + "to" + status
         );
         if ("CUSTOMER".equalsIgnoreCase(status) && lead.getEmail() != null && !lead.getEmail().isEmpty()) {
+            notificationController.sendNotification(
+                    "Lead converted to customer: " + lead.getName()
+            );
             emailService.sendEmail(
                     lead.getEmail(),
                     "Congratulations",
@@ -292,14 +299,18 @@ public class LeadMatrixController {
 
     @PutMapping("/lead/assign/{id}")
     public ResponseEntity<?> assignLead(@PathVariable Long id, @RequestParam String salesEmail) {
-        LeadmatrixEntity lead = leadServices.getLeadById(id);
 
-        if (lead == null) {
-            return ResponseEntity.notFound().build();
-        }
+        LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElseThrow();
+
+
 
         lead.setAssignedTo(salesEmail);
         leadmatrixRepository.save(lead);
+
+        // 🔥 ADD THIS
+        notificationController.sendNotification(
+                "Lead assigned to " + salesEmail + ": " + lead.getName()
+        );
 
         saveActivity(
                 lead.getId(),
@@ -314,7 +325,7 @@ public class LeadMatrixController {
                     "Lead assigned to you: " + lead.getName()
             );
         }
-        return ResponseEntity.ok("Lead assigned successfully");
+        return ResponseEntity.ok(new ApiResponse<>(true, "Lead assigned successfully", lead));
     }
 
 
@@ -447,6 +458,45 @@ public class LeadMatrixController {
         );
         return ResponseEntity.ok(updated);
     }
+
+
+
+    @Autowired
+    private LeadTaskRepository leadTaskRepository;
+
+    @PostMapping("/lead/task")
+    public ResponseEntity<?> addTask(@RequestBody LeadTask task) {
+        if (task.getTaskStatus() == null || task.getTaskStatus().isEmpty()) {
+            task.setTaskStatus("PENDING");
+        }
+        LeadTask saved = leadTaskRepository.save(task);
+
+        saveActivity(
+                task.getLeadId(),
+                "TASK_ADDED",
+                "Task added: " + task.getTaskTitle()
+        );
+        return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/lead/task/{leadId}")
+    public List<LeadTask> getTasksByLeadId(@PathVariable Long leadId) {
+        return leadTaskRepository.findByLeadId(leadId);
+    }
+
+    @PutMapping("/lead/task/status/{taskId}")
+    public ResponseEntity<?> updateTaskStatus(@PathVariable Long taskId, @RequestParam String status) {
+        LeadTask task = leadTaskRepository.findById(taskId).orElse(null);
+
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
+        task.setTaskStatus(status);
+        leadTaskRepository.save(task);
+
+        return ResponseEntity.ok("Task status updated");
+    }
+
 
 
 
