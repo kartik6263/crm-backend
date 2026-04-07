@@ -18,8 +18,7 @@ public class ExcelLeadService {
 
     @Autowired
     private LeadmatrixRespository leadmatrixRepository;
-    @Autowired
-    private LeadActivity leadActivity;
+
     @Autowired
     private ActivityRepository activityRepository;
 
