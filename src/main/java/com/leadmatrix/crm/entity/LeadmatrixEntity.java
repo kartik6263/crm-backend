@@ -28,7 +28,7 @@ public class LeadmatrixEntity {
     private String name;
 
     @Column(nullable = false)
-    private Integer phone;
+    private String phone;
 
     private String email;
     private String source;
