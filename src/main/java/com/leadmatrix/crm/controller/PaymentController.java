@@ -33,7 +33,8 @@ public class PaymentController {
        options.put("receipt", "txn_123");
 
        Order order = client.orders.create(options);
-       return ResponseEntity.ok(order.toString());
+      // return ResponseEntity.ok(order.toString());
+       return ResponseEntity.ok(paymentService.createOrder());
    }
 
     @PostMapping("/success")
@@ -47,4 +48,23 @@ public class PaymentController {
     public String verifyPayment(@RequestBody Map<String, String> data) {
         return "Payment Verified";
     }
+
+
+    /*@PostMapping("/create-order")
+    public ResponseEntity<?> createOrder() throws Exception {
+        return ResponseEntity.ok(paymentService.createOrder());
+    }
+
+    @PostMapping("/success")
+    public String paymentSuccess(@RequestParam Long companyId,
+                                 @RequestParam String paymentId) {
+        return paymentService.activateSubscription(companyId, paymentId);
+    }
+
+    @PostMapping("/verify")
+    public String verifyPayment(@RequestBody Map<String, String> data) {
+        return "Payment Verified";
+    }*/
+
+
 }

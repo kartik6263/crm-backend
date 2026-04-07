@@ -84,11 +84,13 @@ public class AdminController {
     @Autowired
     private crmService crmService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-user")
     public ResponseEntity<?> createUser(@RequestBody databaseCRM user) {
         return ResponseEntity.ok(crmService.registerUser(user));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public List<databaseCRM> getAllUsers() {
         return CrmRespository.findAll();

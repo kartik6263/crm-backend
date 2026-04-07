@@ -9,19 +9,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class TwilioService {
 
-    @Value("${twilio.sid:}")
+    @Value("${twilio.accountSid:}")
     private String accountSid;
 
-    @Value("${twilio.token:}")
+    @Value("${twilio.authToken:}")
     private String authToken;
 
-    @Value("${twilio.number:}")
+    @Value("${twilio.phoneNumber:}")
     private String fromNumber;
 
         public void sendWhatsAppMessage(String to, String messageText) {
 
 
-            if(accountSid == null || accountSid.isEmpty()) {
+            if(accountSid == null || accountSid.isBlank()) {
                 System.out.println("Twilio not configured");
                 return;
             }
@@ -31,7 +31,7 @@ public class TwilioService {
 
             Message message = Message.creator(
                     new PhoneNumber("whatsapp:+91" + to),
-                    new PhoneNumber("whatsapp:+916263811334" + fromNumber),
+                    new PhoneNumber("whatsapp:" + fromNumber),
                     messageText
             ).create();
 
