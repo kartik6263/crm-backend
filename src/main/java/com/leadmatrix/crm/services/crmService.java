@@ -3,11 +3,17 @@ package com.leadmatrix.crm.services;
 
 import java.util.Optional;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.leadmatrix.crm.dpo.LoginResponse;
 import com.leadmatrix.crm.security.JwtUtility;
 import com.leadmatrix.crm.respository.crmRespository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -89,6 +95,48 @@ public class crmService {
             crmRepository.save(user);
             return "User Registered Successfully";
         }
+
+
+    @Value("${google.client.id}")
+    private String googleClientId;
+
+    public LoginResponse googleLogin(String idTokenString) {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(),
+                    GsonFactory.getDefaultInstance()
+            ).setAudience(java.util.Collections.singletonList(googleClientId)).build();
+
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+
+            if (idToken == null) {
+                throw new RuntimeException("Invalid Google ID token");
+            }
+
+            GoogleIdToken.Payload payload = idToken.getPayload();
+
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+
+            databaseCRM user = crmRepository.findByEmail(email).orElse(null);
+
+            if (user == null) {
+                user = new databaseCRM();
+                user.setName(name != null ? name : "Google User");
+                user.setEmail(email);
+                user.setPhone("");
+                user.setPassword(passwordEncoder.encode("GOOGLE_AUTH_USER"));
+                user.setRole("USER");
+                crmRepository.save(user);
+            }
+
+            String token = jwtutil.generateToken(user.getEmail());
+            return new LoginResponse(token, user.getRole(), user.getEmail());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Google login failed: " + e.getMessage());
+        }
+    }
     }
 
 

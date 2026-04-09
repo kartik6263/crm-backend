@@ -1,5 +1,6 @@
 package com.leadmatrix.crm.controller;
 
+import com.leadmatrix.crm.dpo.GoogleLoginRequest;
 import com.leadmatrix.crm.dpo.LoginRequest;
 import com.leadmatrix.crm.dpo.LoginResponse;
 import com.leadmatrix.crm.entity.databaseCRM;
@@ -71,6 +72,11 @@ public class CrmEntryController {
         String token = jwtUtil.generateToken(user.getEmail());
 
         return new LoginResponse(token, user.getRole(), user.getEmail());
+    }
+
+    @PostMapping("/google-login")
+    public LoginResponse googleLogin(@RequestBody GoogleLoginRequest request) {
+        return CrmService.googleLogin(request.getIdToken());
     }
 
 }
