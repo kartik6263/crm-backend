@@ -82,6 +82,10 @@ public class crmService {
                 return "Email already registered";
             }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            if (user.getRole()==null || user.getRole().isBlank()) {
+                user.setRole("USER");
+            }
             crmRepository.save(user);
             return "User Registered Successfully";
         }

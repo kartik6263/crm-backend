@@ -36,6 +36,7 @@ public class CrmEntryController {
     /// ///////////
     @PostMapping("/register")
     public String registerUser(@RequestBody databaseCRM user) {
+        user.setRole("USER");
         CrmService.registerUser(user);
         return "User Registered Successfully";
     }
