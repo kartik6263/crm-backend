@@ -1,6 +1,8 @@
 package com.leadmatrix.crm.controller;
 
+import com.leadmatrix.crm.dpo.AdminVerifyRequest;
 import com.leadmatrix.crm.entity.Company;
+import com.leadmatrix.crm.entity.LeadmatrixEntity;
 import com.leadmatrix.crm.entity.Subscription;
 import com.leadmatrix.crm.entity.databaseCRM;
 import com.leadmatrix.crm.respository.*;
@@ -56,13 +58,10 @@ public class AdminController {
 
     public int totalRevenue(){
 
-        int total = subscriptionRepository.findAll()
+        return subscriptionRepository.findAll()
                 .stream()
                 .mapToInt(sub -> "PRO".equals(sub.getPlan()) ? 500 : 0)
                 .sum();
-
-        return total;
-
     }
 
 // system ststus api
@@ -70,15 +69,11 @@ public class AdminController {
     @GetMapping("/stats")
 
     public Map<String, Long> stats(){
-
         Map<String, Long> map = new HashMap<>();
-
         map.put("totalUsers", CrmRespository.count());
         map.put("totalLeads", leadmatrixRespository.count());
         map.put("totalCompanies", companyRepository.count());
-
         return map;
-
     }
 
     @Autowired
@@ -94,6 +89,19 @@ public class AdminController {
     @GetMapping("/users")
     public List<databaseCRM> getAllUsers() {
         return CrmRespository.findAll();
+    }
+
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyAdminPassword(@RequestBody AdminVerifyRequest request) {
+        boolean valid = crmService.verifyAdminPassword(request.getEmail(), request.getPassword());
+
+        if (!valid) {
+            return ResponseEntity.status(401).body("Invalid admin password");
+        }
+        return ResponseEntity.ok("Admin verified");
     }
 
 

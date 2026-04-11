@@ -3,7 +3,9 @@ package com.leadmatrix.crm.services;
 import com.leadmatrix.crm.controller.NotificationController;
 import com.leadmatrix.crm.entity.LeadmatrixEntity;
 
+import com.leadmatrix.crm.entity.databaseCRM;
 import com.leadmatrix.crm.respository.LeadmatrixRespository;
+import com.leadmatrix.crm.respository.crmRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class leadServices {
     @Autowired
     private  LeadScoringService leadScoringService;
 
+    @Autowired
+    crmRespository crmRepository;
+
     public LeadmatrixEntity saveLead(LeadmatrixEntity lead) {
 
         //calculate score
@@ -29,12 +34,13 @@ public class leadServices {
         return leadmatrixRespository.save(lead);
     }
 
-
-
     // Get All Leads
     public List<LeadmatrixEntity> getAllLeads() {
         return leadmatrixRespository.findAll();
     }
+
+
+
 
     // Get Lead By Id
     public LeadmatrixEntity getLeadById(Long id) {
@@ -70,6 +76,19 @@ public class leadServices {
         lead.setStatus("NEW");
 
         return leadmatrixRespository.save(lead);
+    }
+
+    public List<LeadmatrixEntity> getVisibleLeadsForUser(String email) {
+        databaseCRM user = crmRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+            return leadmatrixRespository.findByCompanyId(user.getCompanyId());
+        }
+        if ("SALES".equalsIgnoreCase(user.getRole())) {
+            return leadmatrixRespository.findByCompanyIdAndAssignedTo(user.getCompanyId(), user.getEmail());
+        }
+        return leadmatrixRespository.findByCompanyIdAndCreatedBy(user.getCompanyId(), user.getEmail());
     }
 
 

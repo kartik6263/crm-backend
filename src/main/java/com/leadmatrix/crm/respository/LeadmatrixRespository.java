@@ -16,10 +16,16 @@ public interface LeadmatrixRespository extends JpaRepository<LeadmatrixEntity, L
     List<LeadmatrixEntity> findByAssignedTo(String assignedTo);
     List<LeadmatrixEntity> findByCompanyId(Long companyId);
     List<LeadmatrixEntity> findByScoreGreaterThan(int score);
+    List<LeadmatrixEntity> findByCompanyIdAndAssignedTo(Long companyId, String assignedTo);
+    List<LeadmatrixEntity> findByCompanyIdAndCreatedBy(Long companyId, String createdBy);
+
+
     @Override
     long count();
     long countByStatus(String status);
     long countByAssignedTo(String assignedTo);
     long countBySource(String source);
     long countByCreatedDate(String createdDate);
+    long countByCompanyId(Long companyId);
+
 }

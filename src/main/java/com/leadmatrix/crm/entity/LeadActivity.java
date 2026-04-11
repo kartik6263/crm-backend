@@ -19,6 +19,7 @@ public class LeadActivity {
     private String description;
 
     private String activityDate;
+    private Long companyId;
 
     public Long getId() {
         return id;
@@ -58,5 +59,12 @@ public class LeadActivity {
 
 
 
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
 
 }

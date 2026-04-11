@@ -92,9 +92,29 @@ public class crmService {
             if (user.getRole()==null || user.getRole().isBlank()) {
                 user.setRole("USER");
             }
+            if (user.getCompanyId()==null) {
+                user.setCompanyId(System.currentTimeMillis());
+            }
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             crmRepository.save(user);
             return "User Registered Successfully";
         }
+
+    public databaseCRM getUserByEmail(String email) {
+        return crmRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public boolean verifyAdminPassword(String email, String password) {
+        databaseCRM user = crmRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!"ADMIN".equalsIgnoreCase(user.getRole())) {
+            return false;
+        }
+
+        return passwordEncoder.matches(password, user.getPassword());
+    }
 
 
     @Value("${google.client.id}")

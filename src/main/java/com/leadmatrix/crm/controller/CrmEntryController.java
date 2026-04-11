@@ -20,6 +20,22 @@ import com.leadmatrix.crm.services.crmService;
 @RequestMapping("/api/crm")
 public class CrmEntryController {
 
+    private final crmRespository crmRespository;
+    private final crmService CrmService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtility jwtUtil;
+
+    public CrmEntryController(AuthenticationManager authenticationManager,
+                              JwtUtility jwtUtil,
+                              crmRespository crmRespository,
+                              crmService crmService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.crmRespository = crmRespository;
+        this.CrmService = crmService;
+    }
+
+
     private final Logger log =
             LoggerFactory.getLogger(CrmEntryController.class);
 
@@ -28,33 +44,13 @@ public class CrmEntryController {
         return "done";
     }
 
-    @Autowired
-    private crmRespository crmRespository;
-
-    @Autowired
-    private crmService CrmService;
-
     /// ///////////
     @PostMapping("/register")
     public String registerUser(@RequestBody databaseCRM user) {
         user.setRole("USER");
         CrmService.registerUser(user);
-        return "User Registered Successfully";
+        return CrmService.registerUser(user);
     }
-
-
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtility jwtUtil;
-    // private final crmRespository crmRespository;
-
-    public CrmEntryController(AuthenticationManager authenticationManager,
-                              JwtUtility jwtUtil,
-                              crmRespository crmRespository) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.crmRespository = crmRespository;
-    }
-
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {

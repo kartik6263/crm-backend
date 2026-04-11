@@ -15,6 +15,7 @@ public class LeadTask {
         private String taskStatus; // PENDING, DONE
         private String assignedTo;
         private String dueDate;
+        private Long companyId;
 
         public Long getId() { return id; }
 
@@ -32,7 +33,16 @@ public class LeadTask {
 
         public String getDueDate() { return dueDate; }
         public void setDueDate(String dueDate) { this.dueDate = dueDate; }
-    }
+
+
+       public Long getCompanyId() {
+                return companyId;
+        }
+        public void setCompanyId(Long companyId) {
+                this.companyId = companyId;
+        }
+
+}
 
 
 

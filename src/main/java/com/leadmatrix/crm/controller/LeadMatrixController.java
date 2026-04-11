@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,9 @@ public class LeadMatrixController {
 
     @Autowired
     private leadServices leadServices;
+
+    @Autowired
+    crmService crmService;
 
     @Autowired
     private crmRespository crmRespository;
@@ -154,6 +158,19 @@ public class LeadMatrixController {
         }
 
         return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/visible")
+    public List<LeadmatrixEntity> getVisibleLeads(@RequestParam String email) {
+        databaseCRM user = crmService.getUserByEmail(email);
+
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+            return leadmatrixRepository.findByCompanyId(user.getCompanyId());
+        }
+        if ("SALES".equalsIgnoreCase(user.getRole())) {
+            return leadmatrixRepository.findByCompanyIdAndAssignedTo(user.getCompanyId(), user.getEmail());
+        }
+        return leadmatrixRepository.findByCompanyIdAndCreatedBy(user.getCompanyId(), user.getEmail());
     }
 
     // Get All Leads
@@ -486,6 +503,35 @@ public class LeadMatrixController {
     @GetMapping("/lead/reminder/by-date/{date}")
     public List<LeadReminder> getRemindersByDate(@PathVariable String date) {
         return reminderRepository.findByReminderDate(date);
+    }
+
+    @GetMapping("/lead/reminder/by-date")
+    public List<LeadReminder> getVisibleRemindersByDate(@RequestParam String email, @RequestParam String date) {
+        databaseCRM user = crmService.getUserByEmail(email);
+
+        List<LeadmatrixEntity> visibleLeads;
+
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+            visibleLeads = leadmatrixRepository.findByCompanyId(user.getCompanyId());
+        } else if ("SALES".equalsIgnoreCase(user.getRole())) {
+            visibleLeads = leadmatrixRepository.findByCompanyIdAndAssignedTo(user.getCompanyId(), user.getEmail());
+        } else {
+            visibleLeads = leadmatrixRepository.findByCompanyIdAndCreatedBy(user.getCompanyId(), user.getEmail());
+        }
+
+        List<LeadReminder> allReminders = reminderRepository.findByReminderDate(date);
+        List<LeadReminder> filtered = new ArrayList<>();
+
+        for (LeadReminder reminder : allReminders) {
+            for (LeadmatrixEntity lead : visibleLeads) {
+                if (lead.getId().equals(reminder.getLeadId())) {
+                    filtered.add(reminder);
+                    break;
+                }
+            }
+        }
+
+        return filtered;
     }
 
    /* @PostMapping("/lead/note")/// //////////////////////////////////
