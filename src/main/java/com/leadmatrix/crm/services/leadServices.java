@@ -34,6 +34,19 @@ public class leadServices {
         return leadmatrixRespository.save(lead);
     }
 
+    public List<LeadmatrixEntity> getVisibleLeadsForUser(String email) {
+        databaseCRM user = crmRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+            return leadmatrixRespository.findByCompanyId(user.getCompanyId());
+        }
+        if ("SALES".equalsIgnoreCase(user.getRole())) {
+            return leadmatrixRespository.findByCompanyIdAndAssignedTo(user.getCompanyId(), user.getEmail());
+        }
+        return leadmatrixRespository.findByCompanyIdAndCreatedBy(user.getCompanyId(), user.getEmail());
+    }
+
     // Get All Leads
     public List<LeadmatrixEntity> getAllLeads() {
         return leadmatrixRespository.findAll();
@@ -78,18 +91,7 @@ public class leadServices {
         return leadmatrixRespository.save(lead);
     }
 
-    public List<LeadmatrixEntity> getVisibleLeadsForUser(String email) {
-        databaseCRM user = crmRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-            return leadmatrixRespository.findByCompanyId(user.getCompanyId());
-        }
-        if ("SALES".equalsIgnoreCase(user.getRole())) {
-            return leadmatrixRespository.findByCompanyIdAndAssignedTo(user.getCompanyId(), user.getEmail());
-        }
-        return leadmatrixRespository.findByCompanyIdAndCreatedBy(user.getCompanyId(), user.getEmail());
-    }
 
 
     @Autowired

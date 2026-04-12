@@ -32,32 +32,28 @@ public class AdminController {
     @Autowired
     private LeadmatrixRespository leadmatrixRespository;
 
-// get all companies
+    @Autowired
+    private crmService crmService;
+
+
+    // get all companies
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/companies")
-
     public List<Company> getAllCompanies(){
-
         return companyRepository.findAll();
-
     }
 
     // get all subscription
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/subscriptions")
-
     public List<Subscription> getSubscriptions(){
-
         return subscriptionRepository.findAll();
-
     }
 
     // total revenue api
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/revenue")
-
     public int totalRevenue(){
-
         return subscriptionRepository.findAll()
                 .stream()
                 .mapToInt(sub -> "PRO".equals(sub.getPlan()) ? 500 : 0)
@@ -68,7 +64,19 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/stats")
 
-    public Map<String, Long> stats(){
+    public Map<String, Long> stats(@RequestParam String email) {
+        databaseCRM admin = crmService.getUserByEmail(email);
+
+        Map<String, Long> map = new HashMap<>();
+        map.put("totalUsers", CrmRespository.findAll().stream()
+                .filter(u -> admin.getCompanyId().equals(u.getCompanyId()))
+                .count());
+        map.put("totalLeads", leadmatrixRespository.countByCompanyId(admin.getCompanyId()));
+        map.put("totalCompanies", companyRepository.count());
+        return map;
+    }
+
+   /* public Map<String, Long> stats(){
         Map<String, Long> map = new HashMap<>();
         map.put("totalUsers", CrmRespository.count());
         map.put("totalLeads", leadmatrixRespository.count());
@@ -76,8 +84,6 @@ public class AdminController {
         return map;
     }
 
-    @Autowired
-    private crmService crmService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-user")
@@ -89,6 +95,23 @@ public class AdminController {
     @GetMapping("/users")
     public List<databaseCRM> getAllUsers() {
         return CrmRespository.findAll();
+    }*/
+
+    @PostMapping("/create-user")
+    public ResponseEntity<?> createUser(@RequestParam String adminEmail, @RequestBody databaseCRM user) {
+        databaseCRM admin = crmService.getUserByEmail(adminEmail);
+        user.setCompanyId(admin.getCompanyId());
+        return ResponseEntity.ok(crmService.registerUser(user));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/users")
+    public List<databaseCRM> getAllUsers(@RequestParam String email) {
+        databaseCRM admin = crmService.getUserByEmail(email);
+
+        return CrmRespository.findAll().stream()
+                .filter(u -> admin.getCompanyId().equals(u.getCompanyId()))
+                .toList();
     }
 
 

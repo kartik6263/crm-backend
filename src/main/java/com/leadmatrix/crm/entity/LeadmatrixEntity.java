@@ -40,7 +40,10 @@ public class LeadmatrixEntity {
     private String document;
 
     private String createdBy;
+
+    @Column(nullable = false)
     private Long companyId;
+
     private String createdDate;
     private  Integer score;
 

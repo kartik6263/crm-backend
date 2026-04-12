@@ -118,8 +118,12 @@ public class LeadMatrixController {
             saveActivity(saved.getId(), "LEAD_CREATED", "Lead created: " + saved.getName());
             return ResponseEntity.ok(saved);
         }*/
+   // @PostMapping("/add")
+    //public ResponseEntity<?> createLead(@RequestBody LeadmatrixEntity lead) {
     @PostMapping("/add")
-    public ResponseEntity<?> createLead(@RequestBody LeadmatrixEntity lead) {
+    public ResponseEntity<?> createLead(@RequestParam String email, @RequestBody LeadmatrixEntity lead) {
+        databaseCRM user = crmService.getUserByEmail(email);
+
         if (lead.getName() == null || lead.getName().isBlank()) {
             return ResponseEntity.badRequest().body("Name is required");
         }
@@ -144,6 +148,7 @@ public class LeadMatrixController {
             lead.setCreatedDate(LocalDate.now().toString());
         }
 
+        lead.setCompanyId(user.getCompanyId());
         LeadmatrixEntity saved = leadServices.saveLead(lead);
 
         saveActivity(saved.getId(), "LEAD_CREATED", "Lead created: " + saved.getName());
@@ -183,14 +188,27 @@ public class LeadMatrixController {
         return leadServices.getAllLeads();
     }
 
-    @GetMapping("/{id}")
+   /* @GetMapping("/{id}")
     public ResponseEntity<?> getLeadById(@PathVariable Long id) {
         LeadmatrixEntity lead = leadServices.getLeadById(id);
         if (lead == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(lead);
-    }
+    }*/
+   @GetMapping("/{id}")
+   public ResponseEntity<?> getLeadById(@PathVariable Long id, @RequestParam String email) {
+       databaseCRM user = crmService.getUserByEmail(email);
+       LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElse(null);
+
+       if (lead == null) {
+           return ResponseEntity.notFound().build();
+       }
+       if (!user.getCompanyId().equals(lead.getCompanyId())) {
+           return ResponseEntity.status(403).body("Access denied");
+       }
+       return ResponseEntity.ok(lead);
+   }
 
     @GetMapping("/search/{name}")
     public List<LeadmatrixEntity> searchLead(@PathVariable String name) {
@@ -424,10 +442,24 @@ public class LeadMatrixController {
         return ResponseEntity.ok(saved);
     }
 
+    //@GetMapping("/lead/task/{leadId}")
+    //public List<LeadTask> getTasksByLeadId(@PathVariable Long leadId) {
+     //   return leadTaskRepository.findByLeadId(leadId);
+   // }
     @GetMapping("/lead/task/{leadId}")
-    public List<LeadTask> getTasksByLeadId(@PathVariable Long leadId) {
-        return leadTaskRepository.findByLeadId(leadId);
+    public ResponseEntity<?> getTasksByLeadId(@PathVariable Long leadId, @RequestParam String email) {
+        databaseCRM user = crmService.getUserByEmail(email);
+        LeadmatrixEntity lead = leadmatrixRepository.findById(leadId).orElse(null);
+
+        if (lead == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!user.getCompanyId().equals(lead.getCompanyId())) {
+            return ResponseEntity.status(403).body("Access denied");
+        }
+        return ResponseEntity.ok(leadTaskRepository.findByLeadId(leadId));
     }
+
 
     @PutMapping("/lead/task/status/{taskId}")
     public ResponseEntity<?> updateTaskStatus(@PathVariable Long taskId, @RequestParam String status) {
@@ -461,9 +493,22 @@ public class LeadMatrixController {
         return ResponseEntity.ok(saved);
     }
 
+    //@GetMapping("/lead/activity/{leadId}")
+    //public List<LeadActivity> getLeadActivityByLeadId(@PathVariable Long leadId) {
+      //  return activityRepository.findByLeadId(leadId);
+    //}
     @GetMapping("/lead/activity/{leadId}")
-    public List<LeadActivity> getLeadActivityByLeadId(@PathVariable Long leadId) {
-        return activityRepository.findByLeadId(leadId);
+    public ResponseEntity<?> getLeadActivityByLeadId(@PathVariable Long leadId, @RequestParam String email) {
+        databaseCRM user = crmService.getUserByEmail(email);
+        LeadmatrixEntity lead = leadmatrixRepository.findById(leadId).orElse(null);
+
+        if (lead == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!user.getCompanyId().equals(lead.getCompanyId())) {
+            return ResponseEntity.status(403).body("Access denied");
+        }
+        return ResponseEntity.ok(activityRepository.findByLeadId(leadId));
     }
 
    /* @PostMapping("/lead/reminder")/// //////////////////////////////
@@ -495,10 +540,26 @@ public class LeadMatrixController {
         return ResponseEntity.ok(saved);
     }
 
-    @GetMapping("/lead/reminder/by-lead/{leadId}")
-    public List<LeadReminder> getReminderByLeadId(@PathVariable Long leadId) {
-        return reminderRepository.findByLeadId(leadId);
-    }
+   // @GetMapping("/lead/reminder/by-lead/{leadId}")
+    //public List<LeadReminder> getReminderByLeadId(@PathVariable Long leadId) {
+      //  return reminderRepository.findByLeadId(leadId);
+    //}
+   @GetMapping("/lead/reminder/by-lead/{leadId}")
+   public ResponseEntity<?> getReminderByLeadId(@PathVariable Long leadId, @RequestParam String email) {
+       databaseCRM user = crmService.getUserByEmail(email);
+       LeadmatrixEntity lead = leadmatrixRepository.findById(leadId).orElse(null);
+
+       if (lead == null) {
+           return ResponseEntity.notFound().build();
+       }
+
+       if (!user.getCompanyId().equals(lead.getCompanyId())) {
+           return ResponseEntity.status(403).body("Access denied");
+       }
+
+       return ResponseEntity.ok(reminderRepository.findByLeadId(leadId));
+   }
+
 
     @GetMapping("/lead/reminder/by-date/{date}")
     public List<LeadReminder> getRemindersByDate(@PathVariable String date) {
@@ -509,7 +570,8 @@ public class LeadMatrixController {
     public List<LeadReminder> getVisibleRemindersByDate(@RequestParam String email, @RequestParam String date) {
         databaseCRM user = crmService.getUserByEmail(email);
 
-        List<LeadmatrixEntity> visibleLeads;
+        List<LeadmatrixEntity> visibleLeads  =  leadServices.getVisibleLeadsForUser(email);
+
 
         if ("ADMIN".equalsIgnoreCase(user.getRole())) {
             visibleLeads = leadmatrixRepository.findByCompanyId(user.getCompanyId());
@@ -562,9 +624,22 @@ public class LeadMatrixController {
         return ResponseEntity.ok(saved);
     }
 
+    //@GetMapping("/lead/note/{leadId}")
+    //public List<LeadNote> getNotesByLeadId(@PathVariable Long leadId) {
+      //  return leadNoteRepository.findByLeadId(leadId);
+    //}
     @GetMapping("/lead/note/{leadId}")
-    public List<LeadNote> getNotesByLeadId(@PathVariable Long leadId) {
-        return leadNoteRepository.findByLeadId(leadId);
+    public ResponseEntity<?> getNotesByLeadId(@PathVariable Long leadId, @RequestParam String email) {
+        databaseCRM user = crmService.getUserByEmail(email);
+        LeadmatrixEntity lead = leadmatrixRepository.findById(leadId).orElse(null);
+
+        if (lead == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!user.getCompanyId().equals(lead.getCompanyId())) {
+            return ResponseEntity.status(403).body("Access denied");
+        }
+        return ResponseEntity.ok(leadNoteRepository.findByLeadId(leadId));
     }
 
     /*@PostMapping("/lead/import")
