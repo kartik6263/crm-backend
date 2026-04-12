@@ -1,6 +1,5 @@
 package com.leadmatrix.crm.entity;
 
-import com.leadmatrix.crm.ENUMS.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,10 +29,10 @@ public class databaseCRM {
 
    // private String role; // Admin or Sales
     //@Enumerated(EnumType.STRING)
-    //private Role role;
+    //private CompanyRole role;
    private String role;
 
-    private Long companyId;
+   // private Long companyId;
 
 
     public databaseCRM() {
@@ -90,11 +89,11 @@ public class databaseCRM {
         this.role = role;
     }
 
-    public Long getCompanyId() {
-        return companyId;
-    }
+    //public Long getCompanyId() {
+       // return companyId;
+    //}
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
+   // public void setCompanyId(Long companyId) {
+        //this.companyId = companyId;
+   //}
 }

@@ -100,6 +100,8 @@ public class AdminController {
     @PostMapping("/create-user")
     public ResponseEntity<?> createUser(@RequestParam String adminEmail, @RequestBody databaseCRM user) {
         databaseCRM admin = crmService.getUserByEmail(adminEmail);
+
+        // new user gets same companyid
         user.setCompanyId(admin.getCompanyId());
         return ResponseEntity.ok(crmService.registerUser(user));
     }

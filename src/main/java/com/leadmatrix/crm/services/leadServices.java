@@ -1,5 +1,6 @@
 package com.leadmatrix.crm.services;
 
+import com.leadmatrix.crm.ENUMS.CompanyRole;
 import com.leadmatrix.crm.controller.NotificationController;
 import com.leadmatrix.crm.entity.LeadmatrixEntity;
 
@@ -24,7 +25,10 @@ public class leadServices {
     private  LeadScoringService leadScoringService;
 
     @Autowired
-    crmRespository crmRepository;
+    LeadmatrixRespository leadmatrixRepository;
+
+    @Autowired
+    CompanyAccessService companyAccessService;
 
     public LeadmatrixEntity saveLead(LeadmatrixEntity lead) {
 
@@ -34,7 +38,7 @@ public class leadServices {
         return leadmatrixRespository.save(lead);
     }
 
-    public List<LeadmatrixEntity> getVisibleLeadsForUser(String email) {
+   /* public List<LeadmatrixEntity> getVisibleLeadsForUser(String email) {
         databaseCRM user = crmRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -45,7 +49,22 @@ public class leadServices {
             return leadmatrixRespository.findByCompanyIdAndAssignedTo(user.getCompanyId(), user.getEmail());
         }
         return leadmatrixRespository.findByCompanyIdAndCreatedBy(user.getCompanyId(), user.getEmail());
-    }
+    }*/
+   public List<LeadmatrixEntity> getVisibleLeadsForUser(String email, Long companyId) {
+       if (!companyAccessService.hasCompanyAccess(email, companyId)) {
+           throw new RuntimeException("No company access");
+       }
+
+       CompanyRole role = companyAccessService.getCompanyRole(email, companyId);
+
+       if (role == CompanyRole.OWNER || role == CompanyRole.ADMIN) {
+           return leadmatrixRepository.findByCompanyId(companyId);
+       }
+       if (role == CompanyRole.SALES) {
+           return leadmatrixRepository.findByCompanyIdAndAssignedTo(companyId, email);
+       }
+       return leadmatrixRepository.findByCompanyId(companyId);
+   }
 
     // Get All Leads
     public List<LeadmatrixEntity> getAllLeads() {

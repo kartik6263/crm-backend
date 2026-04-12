@@ -1,12 +1,15 @@
 package com.leadmatrix.crm.services;
 
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.leadmatrix.crm.dpo.CompanyLoginResponse;
 import com.leadmatrix.crm.dpo.LoginResponse;
 import com.leadmatrix.crm.security.JwtUtility;
 import com.leadmatrix.crm.respository.crmRespository;
@@ -47,6 +50,8 @@ public class crmService {
 
 
 
+    @Autowired
+    CompanyAccessService companyAccessService;
 
     @Autowired
     private crmRespository crmRepository;
@@ -58,6 +63,8 @@ public class crmService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+
 
     public String loginUser(String email, String password) {
         Optional<databaseCRM> userOptional = crmRepository.findByEmail(email);
@@ -87,15 +94,23 @@ public class crmService {
             if (existingUser.isPresent()) {
                 return "Email already registered";
             }
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+
+            // ✅ AUTO COMPANY ID GENERATE
+           // long companyId = System.currentTimeMillis(); // simple unique id
+           // user.setCompanyId(companyId);
+
+            // default role
             if (user.getRole()==null || user.getRole().isBlank()) {
                 user.setRole("USER");
             }
-            if (user.getCompanyId()==null) {
-                user.setCompanyId(System.currentTimeMillis());
-            }
+
+            //if (user.getCompanyId()==null) {
+             //   user.setCompanyId(System.currentTimeMillis());
+          //  }
+            // password encode
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+
             crmRepository.save(user);
             return "User Registered Successfully";
         }
@@ -116,6 +131,19 @@ public class crmService {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
+    public CompanyLoginResponse multiCompanyLogin(String email, String password) {
+        databaseCRM user = crmRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        String token = jwtutil.generateToken(user.getEmail());
+        List<Map<String, Object>> companies = companyAccessService.getUserCompanies(email);
+
+        return new CompanyLoginResponse(token, user.getEmail(), companies);
+    }
 
     @Value("${google.client.id}")
     private String googleClientId;
