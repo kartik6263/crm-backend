@@ -1,11 +1,10 @@
 package com.leadmatrix.crm.controller;
 
+import com.leadmatrix.crm.ENUMS.CompanyRole;
 import com.leadmatrix.crm.dpo.AdminVerifyRequest;
-import com.leadmatrix.crm.entity.Company;
-import com.leadmatrix.crm.entity.LeadmatrixEntity;
-import com.leadmatrix.crm.entity.Subscription;
-import com.leadmatrix.crm.entity.databaseCRM;
+import com.leadmatrix.crm.entity.*;
 import com.leadmatrix.crm.respository.*;
+import com.leadmatrix.crm.services.CompanyAccessService;
 import com.leadmatrix.crm.services.crmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +34,12 @@ public class AdminController {
     @Autowired
     private crmService crmService;
 
+    @Autowired
+    private CompanyAccessService companyAccessService;
+
+    @Autowired
+    private CompanyMemberRepository companyMemberRepository;
+
 
     // get all companies
     @PreAuthorize("hasRole('ADMIN')")
@@ -60,8 +65,32 @@ public class AdminController {
                 .sum();
     }
 
-// system ststus api
+
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/users")
+    public List<databaseCRM> getAllUsers(@RequestParam String email, @RequestParam Long companyId) {
+
+        if (!companyAccessService.hasCompanyAccess(email, companyId)) {
+            throw new RuntimeException("No company access");
+        }
+
+        CompanyRole role = companyAccessService.getCompanyRole(email, companyId);
+        if (!(role == CompanyRole.OWNER || role == CompanyRole.ADMIN)) {
+            throw new RuntimeException("Only OWNER/ADMIN can view users");
+        }
+
+        List<Long> userIds = companyMemberRepository.findByCompanyIdAndActiveTrue(companyId)
+                .stream()
+                .map(CompanyMember::getUserId)
+                .toList();
+
+        return CrmRespository.findAllById(userIds);
+    }
+
+
+
+// system ststus api
+   /* @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/stats")
 
     public Map<String, Long> stats(@RequestParam String email) {
@@ -74,7 +103,30 @@ public class AdminController {
         map.put("totalLeads", leadmatrixRespository.countByCompanyId(admin.getCompanyId()));
         map.put("totalCompanies", companyRepository.count());
         return map;
+    }*/
+@PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/stats")
+public Map<String, Long> stats(@RequestParam String email, @RequestParam Long companyId) {
+
+    if (!companyAccessService.hasCompanyAccess(email, companyId)) {
+        throw new RuntimeException("No company access");
     }
+
+    CompanyRole role = companyAccessService.getCompanyRole(email, companyId);
+    if (!(role == CompanyRole.OWNER || role == CompanyRole.ADMIN)) {
+        throw new RuntimeException("Only OWNER/ADMIN can view stats");
+    }
+
+    long totalUsers = companyMemberRepository.findByCompanyIdAndActiveTrue(companyId).size();
+    long totalLeads = leadmatrixRespository.countByCompanyId(companyId);
+
+    Map<String, Long> map = new HashMap<>();
+    map.put("totalUsers", totalUsers);
+    map.put("totalLeads", totalLeads);
+    map.put("totalCompanies", companyRepository.count());
+
+    return map;
+}
 
    /* public Map<String, Long> stats(){
         Map<String, Long> map = new HashMap<>();
@@ -97,7 +149,40 @@ public class AdminController {
         return CrmRespository.findAll();
     }*/
 
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-user")
+    public ResponseEntity<?> createUser(@RequestParam String adminEmail,
+                                        @RequestParam Long companyId,
+                                        @RequestBody databaseCRM user) {
+
+        if (!companyAccessService.hasCompanyAccess(adminEmail, companyId)) {
+            return ResponseEntity.status(403).body("No company access");
+        }
+
+        CompanyRole role = companyAccessService.getCompanyRole(adminEmail, companyId);
+        if (!(role == CompanyRole.OWNER || role == CompanyRole.ADMIN)) {
+            return ResponseEntity.status(403).body("Only OWNER/ADMIN can create users");
+        }
+
+        String result = crmService.registerUser(user);
+
+        if (!"User Registered Successfully".equalsIgnoreCase(result)) {
+            return ResponseEntity.badRequest().body(result);
+        }
+
+        databaseCRM savedUser = crmService.getUserByEmail(user.getEmail());
+
+        companyAccessService.addUserToCompany(
+                companyId,
+                savedUser.getId(),
+                CompanyRole.valueOf(user.getRole().toUpperCase())
+        );
+
+        return ResponseEntity.ok("User created and added to company successfully");
+    }
+   /* @PostMapping("/create-user")
     public ResponseEntity<?> createUser(@RequestParam String adminEmail, @RequestBody databaseCRM user) {
         databaseCRM admin = crmService.getUserByEmail(adminEmail);
 
@@ -114,7 +199,7 @@ public class AdminController {
         return CrmRespository.findAll().stream()
                 .filter(u -> admin.getCompanyId().equals(u.getCompanyId()))
                 .toList();
-    }
+    }*/
 
 
 

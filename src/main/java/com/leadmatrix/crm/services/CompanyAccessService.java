@@ -137,4 +137,21 @@ public class CompanyAccessService {
 
         return "Invite accepted successfully";
     }
+
+    public void addUserToCompany(Long companyId, Long userId, CompanyRole role) {
+        Optional<CompanyMember> existing = companyMemberRepository
+                .findByCompanyIdAndUserIdAndActiveTrue(companyId, userId);
+
+        if (existing.isPresent()) {
+            throw new RuntimeException("User already exists in this company");
+        }
+
+        CompanyMember member = new CompanyMember();
+        member.setCompanyId(companyId);
+        member.setUserId(userId);
+        member.setRole(role);
+        member.setActive(true);
+
+        companyMemberRepository.save(member);
+    }
 }
