@@ -105,8 +105,22 @@ public class CrmEntryController {
         return "Company and owner account created successfully";
     }
 
-
     @PostMapping("/login")
+    public CompanyLoginResponse login(@RequestBody LoginRequest request) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail().trim().toLowerCase(),
+                        request.getPassword()
+                )
+        );
+
+        return crmService.multiCompanyLogin(
+                request.getEmail().trim().toLowerCase(),
+                request.getPassword()
+        );
+    }
+  /*  @PostMapping("/login")
     public CompanyLoginResponse multiCompanyLogin(String email, String password) {
         databaseCRM user = crmRespository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -120,7 +134,7 @@ public class CrmEntryController {
 
         return new CompanyLoginResponse(token, user.getEmail(), companies);
     }
-   /* public LoginResponse login(@RequestBody LoginRequest request) {
+   // public LoginResponse login(@RequestBody LoginRequest request) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
