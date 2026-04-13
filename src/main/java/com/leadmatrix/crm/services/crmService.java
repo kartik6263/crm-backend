@@ -66,8 +66,26 @@ public class crmService {
 
 
 
+    public CompanyLoginResponse multiCompanyLogin(String email, String password) {
+        String normalizedEmail = email.trim().toLowerCase();
+
+        databaseCRM user = crmRepository.findByEmail(normalizedEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        String token = jwtutil.generateToken(user.getEmail());
+        List<Map<String, Object>> companies = companyAccessService.getUserCompanies(normalizedEmail);
+
+        return new CompanyLoginResponse(token, user.getEmail(), companies);
+    }
+
+
     public String loginUser(String email, String password) {
-        Optional<databaseCRM> userOptional = crmRepository.findByEmail(email);
+        String normalizedEmail = email.trim().toLowerCase();
+        Optional<databaseCRM> userOptional = crmRepository.findByEmail(normalizedEmail);
 
         if (userOptional.isEmpty()) {
             return "User not found";
@@ -134,21 +152,7 @@ public class crmService {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
-    public CompanyLoginResponse multiCompanyLogin(String email, String password) {
-        String normalizedEmail = email.trim().toLowerCase();
 
-        databaseCRM user = crmRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        String token = jwtutil.generateToken(user.getEmail());
-        List<Map<String, Object>> companies = companyAccessService.getUserCompanies(email);
-
-        return new CompanyLoginResponse(token, user.getEmail(), companies);
-    }
 
     @Value("${google.client.id}")
     private String googleClientId;

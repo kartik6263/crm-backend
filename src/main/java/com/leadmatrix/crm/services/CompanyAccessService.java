@@ -49,10 +49,15 @@ public class CompanyAccessService {
     }
 
     public List<Map<String, Object>> getUserCompanies(String email) {
-        databaseCRM user = crmRepository.findByEmail(email)
+        databaseCRM user = crmRepository.findByEmail(email.trim().toLowerCase())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<CompanyMember> memberships = companyMemberRepository.findByUserIdAndActiveTrue(user.getId());
+
+        if (memberships.isEmpty()) {
+            throw new RuntimeException("User is not linked to any company");
+        }
+
         List<Map<String, Object>> result = new ArrayList<>();
 
         for (CompanyMember membership : memberships) {
