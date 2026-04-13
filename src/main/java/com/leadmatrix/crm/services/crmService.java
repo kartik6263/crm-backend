@@ -89,6 +89,9 @@ public class crmService {
        // private BCryptPasswordEncoder passwordEncoder;
 
         public String registerUser(databaseCRM user){
+            String normalizedEmail = user.getEmail().trim().toLowerCase();
+            user.setEmail(normalizedEmail);
+
             Optional<databaseCRM> existingUser = crmRepository.findByEmail(user.getEmail());
 
             if (existingUser.isPresent()) {
@@ -132,6 +135,8 @@ public class crmService {
     }
 
     public CompanyLoginResponse multiCompanyLogin(String email, String password) {
+        String normalizedEmail = email.trim().toLowerCase();
+
         databaseCRM user = crmRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
