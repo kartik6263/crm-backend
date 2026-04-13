@@ -108,15 +108,17 @@ public class CrmEntryController {
     @PostMapping("/login")
     public CompanyLoginResponse login(@RequestBody LoginRequest request) {
 
+        String normalizedEmail = request.getEmail().trim().toLowerCase();
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail().trim().toLowerCase(),
+                        normalizedEmail,
                         request.getPassword()
                 )
         );
 
         return crmService.multiCompanyLogin(
-                request.getEmail().trim().toLowerCase(),
+                normalizedEmail,
                 request.getPassword()
         );
     }

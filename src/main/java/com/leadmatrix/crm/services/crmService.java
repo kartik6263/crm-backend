@@ -110,7 +110,7 @@ public class crmService {
             String normalizedEmail = user.getEmail().trim().toLowerCase();
             user.setEmail(normalizedEmail);
 
-            Optional<databaseCRM> existingUser = crmRepository.findByEmail(user.getEmail());
+            Optional<databaseCRM> existingUser = crmRepository.findByEmail(normalizedEmail);
 
             if (existingUser.isPresent()) {
                 return "Email already registered";
@@ -137,7 +137,7 @@ public class crmService {
         }
 
     public databaseCRM getUserByEmail(String email) {
-        return crmRepository.findByEmail(email)
+        return crmRepository.findByEmail(email.trim().toLowerCase())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
