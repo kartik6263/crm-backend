@@ -71,10 +71,16 @@ public class CrmEntryController {
     }
 
     /// ///////////
-     @PostMapping("/register")
+    /* @PostMapping("/register")
   public String registerUser(@RequestBody databaseCRM user) {
        user.setRole("USER");
      CrmService.registerUser(user);
+        return CrmService.registerUser(user);
+    }*/
+    @PostMapping("/register")
+    public String registerUser(@RequestBody databaseCRM user) {
+        user.setRole("USER");
+        user.setEmail(user.getEmail().trim().toLowerCase());
         return CrmService.registerUser(user);
     }
 
