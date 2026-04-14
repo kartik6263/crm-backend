@@ -88,7 +88,7 @@ public class CrmEntryController {
     public String registerCompanyUser(@RequestBody RegisterCompanyRequest request) {
         databaseCRM user = new databaseCRM();
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setEmail(request.getEmail().trim().toLowerCase());
         user.setPhone(request.getPhone());
         user.setPassword(request.getPassword());
         user.setRole("USER");
@@ -99,7 +99,7 @@ public class CrmEntryController {
             return result;
         }
 
-        databaseCRM savedUser = crmService.getUserByEmail(request.getEmail());
+        databaseCRM savedUser = crmService.getUserByEmail(request.getEmail().trim().toLowerCase());
         companyAccessService.createCompanyWithOwner(savedUser, request.getCompanyName());
 
         return "Company and owner account created successfully";
