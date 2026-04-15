@@ -151,7 +151,7 @@ public Map<String, Long> stats(@RequestParam String email, @RequestParam Long co
 
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+   /* @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-user")
     public ResponseEntity<?> createUser(@RequestParam String adminEmail,
                                         @RequestParam Long companyId,
@@ -166,6 +166,7 @@ public Map<String, Long> stats(@RequestParam String email, @RequestParam Long co
             return ResponseEntity.status(403).body("Only OWNER/ADMIN can create users");
         }
 
+        user.setEmail(user.getEmail().trim().toLowerCase());
         String result = crmService.registerUser(user);
 
         if (!"User Registered Successfully".equalsIgnoreCase(result)) {
@@ -181,7 +182,45 @@ public Map<String, Long> stats(@RequestParam String email, @RequestParam Long co
         );
 
         return ResponseEntity.ok("User created and added to company successfully");
-    }
+    }*/
+   @PostMapping("/create-user")
+   public ResponseEntity<?> createUser(@RequestParam String adminEmail,
+                                       @RequestParam Long companyId,
+                                       @RequestBody databaseCRM user) {
+
+       if (!companyAccessService.hasCompanyAccess(adminEmail, companyId)) {
+           return ResponseEntity.status(403).body("No company access");
+       }
+
+       CompanyRole adminRole = companyAccessService.getCompanyRole(adminEmail, companyId);
+       if (!(adminRole == CompanyRole.OWNER || adminRole == CompanyRole.ADMIN)) {
+           return ResponseEntity.status(403).body("Only OWNER/ADMIN can create users");
+       }
+
+       user.setEmail(user.getEmail().trim().toLowerCase());
+
+       String requestedRole = (user.getRole() == null || user.getRole().isBlank())
+               ? "USER"
+               : user.getRole().trim().toUpperCase();
+
+       user.setRole(requestedRole);
+
+       String result = crmService.registerUser(user);
+
+       if (!"User Registered Successfully".equalsIgnoreCase(result)) {
+           return ResponseEntity.badRequest().body(result);
+       }
+
+       databaseCRM savedUser = crmService.getUserByEmail(user.getEmail().trim().toLowerCase());
+
+       companyAccessService.addUserToCompany(
+               companyId,
+               savedUser.getId(),
+               CompanyRole.valueOf(requestedRole)
+       );
+
+       return ResponseEntity.ok("User created and added to company successfully");
+   }
    /* @PostMapping("/create-user")
     public ResponseEntity<?> createUser(@RequestParam String adminEmail, @RequestBody databaseCRM user) {
         databaseCRM admin = crmService.getUserByEmail(adminEmail);
