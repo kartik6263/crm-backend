@@ -172,7 +172,7 @@ public Map<String, Long> stats(@RequestParam String email, @RequestParam Long co
             return ResponseEntity.badRequest().body(result);
         }
 
-        databaseCRM savedUser = crmService.getUserByEmail(user.getEmail());
+        databaseCRM savedUser = crmService.getUserByEmail(user.getEmail().trim().toLowerCase());
 
         companyAccessService.addUserToCompany(
                 companyId,
