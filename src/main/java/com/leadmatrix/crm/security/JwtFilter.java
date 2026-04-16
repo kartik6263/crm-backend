@@ -39,6 +39,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod()) ||
                 path.equals("/api/crm/login") ||
                 path.equals("/api/crm/register") ||
+                path.equals("/api/crm/register-company") ||
+                path.equals("/api/crm/google-login") ||
                 path.equals("/actuator/health")) {
             filterChain.doFilter(request, response);
             return;

@@ -41,8 +41,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
-                        .requestMatchers("/api/crm/login", "/api/crm/register").permitAll()
-                        .requestMatchers("/api/crm/login", "/api/crm/register", "/api/crm/google-login").permitAll()
+                        //.requestMatchers("/api/crm/login", "/api/crm/register").permitAll()
+                        .requestMatchers("/api/crm/login", "/api/crm/register", "/api/crm/register-company" , "/api/crm/google-login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -61,7 +61,6 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "https://crm-ev4.pages.dev",
-                //"https://spiffy-boba-421b79.netlify.app",
                 "http://localhost:5500",
                 "http://127.0.0.1:5500"
         ));
