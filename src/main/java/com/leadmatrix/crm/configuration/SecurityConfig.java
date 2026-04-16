@@ -61,6 +61,7 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "https://crm-ev4.pages.dev",
+                "https://harmonious-phoenix-ec7e36.netlify.app",
                 "http://localhost:5500",
                 "http://127.0.0.1:5500"
         ));

@@ -36,6 +36,7 @@ public class CompanyAccessService {
         company.setEmail(user.getEmail());
         company.setPhone(user.getPhone());
         company.setStatus("ACTIVE");
+
         Company savedCompany = companyRepository.save(company);
 
         CompanyMember member = new CompanyMember();
