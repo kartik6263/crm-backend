@@ -249,7 +249,17 @@ public Map<String, Long> stats(@RequestParam String email, @RequestParam Long co
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/verify-password")
-    public ResponseEntity<?> verifyAdminPassword(@RequestBody AdminVerifyRequest request) {
+    public ResponseEntity<?> verifyAdminPassword(@RequestParam Long companyId,
+                                                 @RequestBody AdminVerifyRequest request) {
+
+        if (!companyAccessService.hasCompanyAccess(request.getEmail(), companyId)) {
+            return ResponseEntity.status(403).body("No company access");
+        }
+        CompanyRole role = companyAccessService.getCompanyRole(request.getEmail(), companyId);
+        if (!(role == CompanyRole.OWNER || role == CompanyRole.ADMIN)) {
+            return ResponseEntity.status(403).body("Access denied");
+        }
+
         boolean valid = crmService.verifyAdminPassword(request.getEmail(), request.getPassword());
 
         if (!valid) {
@@ -257,6 +267,5 @@ public Map<String, Long> stats(@RequestParam String email, @RequestParam Long co
         }
         return ResponseEntity.ok("Admin verified");
     }
-
 
 }
