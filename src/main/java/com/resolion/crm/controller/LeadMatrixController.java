@@ -2,9 +2,9 @@ package com.resolion.crm.controller;
 
 
 import com.resolion.crm.ENUMS.CompanyRole;
-import com.leadmatrix.crm.entity.*;
-import com.leadmatrix.crm.respository.*;
-import com.leadmatrix.crm.services.*;
+import com.resolion.crm.entity.*;
+import com.resolion.crm.respository.*;
+import com.resolion.crm.services.*;
 import com.resolion.crm.entity.*;
 import com.resolion.crm.respository.*;
 import com.resolion.crm.services.*;

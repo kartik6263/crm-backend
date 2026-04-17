@@ -2,8 +2,8 @@ package com.resolion.crm.controller;
 
 import com.resolion.crm.ENUMS.CompanyRole;
 import com.resolion.crm.dpo.AdminVerifyRequest;
-import com.leadmatrix.crm.entity.*;
-import com.leadmatrix.crm.respository.*;
+import com.resolion.crm.entity.*;
+import com.resolion.crm.respository.*;
 import com.resolion.crm.entity.Company;
 import com.resolion.crm.entity.CompanyMember;
 import com.resolion.crm.entity.Subscription;
