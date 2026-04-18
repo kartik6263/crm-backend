@@ -49,16 +49,42 @@ public class AdminController {
     // get all companies
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/companies")
+    public List<Company> getAllCompanies(@RequestParam String email, @RequestParam Long companyId) {
+        if (!companyAccessService.hasCompanyAccess(email, companyId)) {
+            throw new RuntimeException("Access Denied");
+        }
+        CompanyRole role = companyAccessService.getCompanyRole(email, companyId);
+        if (!(role == CompanyRole.OWNER || role == CompanyRole.ADMIN)) {
+            throw new RuntimeException("Access Denied");
+        }
+        return companyRepository.findById(companyId)
+                .map(List::of)
+                .orElse(List.of());
+    }
+    /*@GetMapping("/companies")
     public List<Company> getAllCompanies(){
         return companyRepository.findAll();
-    }
+    }*/
 
     // get all subscription
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/subscriptions")
+    public List<Subscription> getSubscriptions(@RequestParam String email, @RequestParam Long companyId) {
+        if (!companyAccessService.hasCompanyAccess(email, companyId)) {
+            throw new RuntimeException("Access Denied");
+        }
+        CompanyRole role = companyAccessService.getCompanyRole(email, companyId);
+        if (!(role == CompanyRole.OWNER || role == CompanyRole.ADMIN)) {
+            throw new RuntimeException("Access Denied");
+        }
+        return subscriptionRepository.findAll().stream()
+                .filter(sub -> companyId.equals(sub.getCompanyId()))
+                .toList();
+    }
+   /* @GetMapping("/subscriptions")
     public List<Subscription> getSubscriptions(){
         return subscriptionRepository.findAll();
-    }
+    }*/
 
     // total revenue api
     @PreAuthorize("hasRole('ADMIN')")
@@ -114,7 +140,7 @@ public class AdminController {
 public Map<String, Long> stats(@RequestParam String email, @RequestParam Long companyId) {
 
     if (!companyAccessService.hasCompanyAccess(email, companyId)) {
-        throw new RuntimeException("No company access");
+        throw new RuntimeException("No company access,  access denied");
     }
 
     CompanyRole role = companyAccessService.getCompanyRole(email, companyId);
