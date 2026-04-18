@@ -142,12 +142,12 @@ public class crmService {
     }
 
     public boolean verifyAdminPassword(String email, String password) {
-        databaseCRM user = crmRepository.findByEmail(email)
+        databaseCRM user = crmRepository.findByEmail(email.trim().toLowerCase())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!"ADMIN".equalsIgnoreCase(user.getRole())) {
-            return false;
-        }
+       // if (!"ADMIN".equalsIgnoreCase(user.getRole())) {
+          //  return false;
+    //    }
 
         return passwordEncoder.matches(password, user.getPassword());
     }
