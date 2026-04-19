@@ -20,7 +20,7 @@ public class LeadNote {
 
     private String createdDate;
 
-    private Long companyId;
+   // private Long companyId;
 
 
     public Long getId() {
@@ -63,11 +63,11 @@ public class LeadNote {
     }
 
 
-    public Long getCompanyId() {
-        return companyId;
-    }
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
+   // public Long getCompanyId() {
+     //   return companyId;
+   // }
+    //public void setCompanyId(Long companyId) {
+     //   this.companyId = companyId;
+  //  }
 
 }
