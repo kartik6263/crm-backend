@@ -175,7 +175,7 @@ public class CrmEntryController {
     @PostMapping("/login-step2")
     public CompanyLoginResponse loginStep2(@RequestBody TwoFactorVerifyRequest request) {
         signupFlowService.verifyTwoFactorOtp(request.getEmail(), request.getOtp());
-        return crmService.multiCompanyLogin(request.getEmail(), "OTP_VERIFIED");
+        return crmService.multiCompanyLoginAfter2FA(request.getEmail(), "OTP_VERIFIED");
     }
 
     @GetMapping("/2fa/setup")
@@ -201,7 +201,7 @@ public class CrmEntryController {
             throw new RuntimeException("Invalid authenticator or backup code");
         }
 
-        return crmService.multiCompanyLogin(email);
+        return crmService.multiCompanyLoginAfter2FA(email);
     }
 
 
