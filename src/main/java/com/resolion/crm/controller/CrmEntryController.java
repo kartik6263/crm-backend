@@ -201,7 +201,7 @@ public class CrmEntryController {
             throw new RuntimeException("Invalid authenticator or backup code");
         }
 
-        return crmService.multiCompanyLoginAfter2FA(email);
+        return crmService.multiCompanyLogin(email);
     }
 
 

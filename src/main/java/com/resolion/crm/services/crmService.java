@@ -73,7 +73,22 @@ public class crmService {
     }
 
 
-    public CompanyLoginResponse multiCompanyLoginAfter2FA(String email) {
+    public CompanyLoginResponse multiCompanyLogin(String email, String password) {
+        String normalizedEmail = email.trim().toLowerCase();
+
+        databaseCRM user = crmRepository.findByEmail(normalizedEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        String token = jwtutil.generateToken(user.getEmail());
+        List<Map<String, Object>> companies = companyAccessService.getUserCompanies(normalizedEmail);
+
+        return new CompanyLoginResponse(token, user.getEmail(), companies);
+    }
+   /* public CompanyLoginResponse multiCompanyLoginAfter2FA(String email) {
         String normalizedEmail = email.trim().toLowerCase();
 
         databaseCRM user = crmRepository.findByEmail(normalizedEmail)
@@ -83,7 +98,7 @@ public class crmService {
         List<Map<String, Object>> companies = companyAccessService.getUserCompanies(normalizedEmail);
 
         return new CompanyLoginResponse(token, user.getEmail(), companies);
-    }
+    }*/
     /*public CompanyLoginResponse multiCompanyLogin(String email, String password) {
         String normalizedEmail = email.trim().toLowerCase();
 

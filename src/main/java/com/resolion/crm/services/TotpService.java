@@ -1,16 +1,17 @@
 package com.resolion.crm.services;
 
 import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.CodeVerifier;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
 import dev.samstevens.totp.code.HashingAlgorithm;
 import dev.samstevens.totp.qr.QrData;
-import dev.samstevens.totp.qr.QrDataFactory;
+import dev.samstevens.totp.qr.QrGenerator;
+import dev.samstevens.totp.qr.ZxingPngQrGenerator;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import dev.samstevens.totp.util.Utils;
-import dev.samstevens.totp.code.CodeVerifier;
-import dev.samstevens.totp.code.DefaultCodeVerifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,18 +35,24 @@ public class TotpService {
     }
 
     public String buildQrUrl(String email, String secret) {
-        QrData data = new QrData.Builder()
-                .label(email)
-                .secret(secret)
-                .issuer("Resolion CRM")
-                .algorithm(HashingAlgorithm.SHA1)
-                .digits(6)
-                .period(30)
-                .build();
+        try {
+            QrData data = new QrData.Builder()
+                    .label(email)
+                    .secret(secret)
+                    .issuer("Resolion CRM")
+                    .algorithm(HashingAlgorithm.SHA1)
+                    .digits(6)
+                    .period(30)
+                    .build();
 
-        return Utils.getDataUriForImage(
-                new QrDataFactory().newBuilder(data).build(200)
-        );
+            QrGenerator generator = new ZxingPngQrGenerator();
+            byte[] imageData = generator.generate(data);
+            String mimeType = generator.getImageMimeType();
+
+            return Utils.getDataUriForImage(imageData, mimeType);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate QR code", e);
+        }
     }
 
     public List<String> generateBackupCodes() {
