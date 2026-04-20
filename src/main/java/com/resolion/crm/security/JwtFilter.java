@@ -37,6 +37,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // ✅ Allow preflight (CORS fix)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod()) ||
+                path.equals("/api/crm/start-signup") ||
+                path.equals("/api/crm/verify-signup-otp") ||
+                path.equals("/api/crm/verify-phone-otp") ||
+                path.equals("/api/crm/complete-signup")||
+                path.equals("/api/crm/login-step1") ||
+                path.equals("/api/crm/login-step2")   ||
                 path.equals("/api/crm/login") ||
                 path.equals("/api/crm/register") ||
                 path.equals("/api/crm/register-company") ||

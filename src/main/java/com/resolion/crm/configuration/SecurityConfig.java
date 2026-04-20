@@ -42,7 +42,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         //.requestMatchers("/api/crm/login", "/api/crm/register").permitAll()
-                        .requestMatchers("/api/crm/login", "/api/crm/register", "/api/crm/register-company" , "/api/crm/google-login").permitAll()
+                        .requestMatchers("/api/crm/start-signup",
+                                "/api/crm/verify-signup-otp",
+                                "/api/crm/complete-signup",
+                                "/api/crm/login-totp",
+                                "/api/crm/verify-phone-otp",
+                                "/api/crm/login-step1",
+                                "/api/crm/login-step2",
+                                "/api/crm/login",
+                                "/api/crm/register",
+                                "/api/crm/register-company" ,
+                                "/api/crm/google-login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

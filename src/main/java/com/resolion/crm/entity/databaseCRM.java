@@ -31,6 +31,9 @@ public class databaseCRM {
     //@Enumerated(EnumType.STRING)
     //private CompanyRole role;
    private String role;
+    private String twoFactorSecret;
+    private Boolean twoFactorEnabled = false;
+    private String backupCodes;
 
    // private Long companyId;
 
@@ -96,4 +99,27 @@ public class databaseCRM {
    // public void setCompanyId(Long companyId) {
         //this.companyId = companyId;
    //}
+   public String getTwoFactorSecret() {
+       return twoFactorSecret;
+   }
+
+    public void setTwoFactorSecret(String twoFactorSecret) {
+        this.twoFactorSecret = twoFactorSecret;
+    }
+
+    public Boolean getTwoFactorEnabled() {
+        return twoFactorEnabled;
+    }
+
+    public void setTwoFactorEnabled(Boolean twoFactorEnabled) {
+        this.twoFactorEnabled = twoFactorEnabled;
+    }
+
+    public String getBackupCodes() {
+        return backupCodes;
+    }
+
+    public void setBackupCodes(String backupCodes) {
+        this.backupCodes = backupCodes;
+    }
 }

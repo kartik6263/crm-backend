@@ -1,14 +1,12 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.dpo.CompanyLoginResponse;
-import com.resolion.crm.dpo.GoogleLoginRequest;
-import com.resolion.crm.dpo.LoginRequest;
-import com.resolion.crm.dpo.LoginResponse;
-import com.resolion.crm.dpo.RegisterCompanyRequest;
+import com.resolion.crm.dpo.*;
 import com.resolion.crm.entity.databaseCRM;
 import com.resolion.crm.respository.crmRespository;
 import com.resolion.crm.security.JwtUtility;
 import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.services.SignupFlowService;
+import com.resolion.crm.services.UserTwoFactorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,12 @@ public class CrmEntryController {
 
     @Autowired
     private crmService crmService;
+
+    @Autowired
+    SignupFlowService signupFlowService;
+
+    @Autowired
+    private UserTwoFactorService userTwoFactorService;
 
 
 
@@ -102,7 +106,7 @@ public class CrmEntryController {
         return "Company and owner account created successfully";
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public CompanyLoginResponse login(@RequestBody LoginRequest request) {
 
         String normalizedEmail = request.getEmail().trim().toLowerCase();
@@ -119,6 +123,89 @@ public class CrmEntryController {
                 request.getPassword()
         );
     }
+    */
+
+
+
+    @PostMapping("/start-signup")
+    public String startSignup(@RequestBody StartSignupRequest request) {
+        return signupFlowService.startSignup(
+                request.getName(),
+                request.getEmail(),
+                request.getPhone(),
+                request.getPassword(),
+                request.getCompanyName(),
+                request.getCaptchaToken()
+        );
+    }
+
+   // @PostMapping("/verify-signup-otp")
+    //public String verifySignupOtp(@RequestBody VerifyOtpRequest request) {
+      //  return authFlowService.verifySignupOtp(request.getEmail(), request.getOtp());
+    //}
+
+
+    @PostMapping("/verify-email-otp")
+    public String verifyEmailOtp(@RequestBody VerifyOtpRequest request) {
+        return signupFlowService.verifyEmailOtp(request.getEmail(), request.getOtp());
+    }
+
+    @PostMapping("/verify-phone-otp")
+    public String verifyPhoneOtp(@RequestBody PhoneOtpRequest request) {
+        return signupFlowService.verifyPhoneOtp(request.getPhone(), request.getOtp());
+    }
+
+    @PostMapping("/complete-signup")
+    public String completeSignup(@RequestBody VerifyOtpRequest request) {
+        return signupFlowService.completeSignup(request.getEmail());
+    }
+
+    @PostMapping("/login-step1")
+    public String loginStep1(@RequestBody LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail().trim().toLowerCase(),
+                        request.getPassword()
+                )
+        );
+
+        signupFlowService.sendTwoFactorOtp(request.getEmail().trim().toLowerCase());
+        return "2FA OTP sent";
+    }
+    @PostMapping("/login-step2")
+    public CompanyLoginResponse loginStep2(@RequestBody TwoFactorVerifyRequest request) {
+        signupFlowService.verifyTwoFactorOtp(request.getEmail(), request.getOtp());
+        return crmService.multiCompanyLogin(request.getEmail(), "OTP_VERIFIED");
+    }
+
+    @GetMapping("/2fa/setup")
+    public TotpSetupResponse setupAuthenticator(@RequestParam String email) {
+        return userTwoFactorService.beginSetup(email);
+    }
+
+    @PostMapping("/2fa/confirm")
+    public String confirmAuthenticator(@RequestBody EnableTotpRequest request) {
+        return userTwoFactorService.confirmSetup(request.getEmail(), request.getCode());
+    }
+
+    @PostMapping("/login-totp")
+    public CompanyLoginResponse loginWithTotp(@RequestBody TotpLoginRequest request) {
+        String email = request.getEmail().trim().toLowerCase();
+
+        if (!crmService.verifyPassword(email, request.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        boolean valid = userTwoFactorService.verifyTotpOrBackupCode(email, request.getCode());
+        if (!valid) {
+            throw new RuntimeException("Invalid authenticator or backup code");
+        }
+
+        return crmService.multiCompanyLoginAfter2FA(email);
+    }
+
+
+
   /*  @PostMapping("/login")
     public CompanyLoginResponse multiCompanyLogin(String email, String password) {
         databaseCRM user = crmRespository.findByEmail(email)
