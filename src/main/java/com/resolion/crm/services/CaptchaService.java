@@ -13,10 +13,14 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class CaptchaService {
 
-    @Value("${turnstile.secret}")
+    @Value("${turnstile.secret:}")
     private String turnstileSecret;
 
     public boolean verifyCaptcha(String captchaToken) {
+        if (turnstileSecret == null || turnstileSecret.isBlank()) {
+            throw new RuntimeException("Turnstile secret is not configured");
+        }
+
         if (captchaToken == null || captchaToken.isBlank()) {
             return false;
         }
