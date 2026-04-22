@@ -44,23 +44,6 @@ public class TwilioService {
             }
         }
 
-           /* public void sendSmsOtp (String to, String messageText){
-                if (accountSid == null || accountSid.isEmpty()) {
-                    System.out.println("Twilio not configured");
-                    return;
-                }
-
-               Twilio.init(accountSid, authToken);
-
-                Message.creator(
-                     new PhoneNumber(to),
-                       new PhoneNumber(fromNumber),
-                       messageText
-                ).create();
-
-            }
-
-    }  */
 
 
 
