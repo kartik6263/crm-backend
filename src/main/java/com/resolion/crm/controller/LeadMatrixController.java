@@ -1009,7 +1009,7 @@ public class LeadMatrixController {
 
     @PostMapping("/send-whatsapp")
     public String sendMessage(@RequestParam String phone) {
-        twilioService.sendWhatsAppMessage(phone, "Hello from CRM 🚀");
+        twilioService.sendSmsOtp(phone, "Hello from CRM 🚀");
         return "Message Sent";
     }
 
