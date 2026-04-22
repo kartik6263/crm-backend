@@ -18,7 +18,7 @@ public class TwilioService {
     @Value("${twilio.phoneNumber:}")
     private String fromNumber;
 
-        public void sendWhatsAppMessage(String to, String messageText) {
+        public void sendSmsOtp(String to, String messageText) {
             if (accountSid == null || accountSid.isBlank()
                     || authToken == null || authToken.isBlank()
                     || fromNumber == null || fromNumber.isBlank()) {
