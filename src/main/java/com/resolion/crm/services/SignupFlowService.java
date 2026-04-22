@@ -43,9 +43,11 @@ public class SignupFlowService {
     private CompanyAccessService companyAccessService;
 
     public String startSignup(String name, String email, String phone, String password, String companyName, String captchaToken) {
-        email = email.trim().toLowerCase();
+        String normalizedEmail = email.trim().toLowerCase();
 
-        if (crmRepository.findByEmail(email).isPresent()) {
+      //  email = email.trim().toLowerCase();
+
+        if (crmRepository.findByEmail(normalizedEmail).isPresent()) {
             return "Email already registered";
         }
 
@@ -56,11 +58,15 @@ public class SignupFlowService {
         String emailOtp = otpService.generateOtp();
         String phoneOtp = otpService.generateOtp();
 
-        SignupVerification signup = signupVerificationRepository.findByEmail(email)
+        System.out.println("Generated Email OTP = " + emailOtp);
+        System.out.println("Generated Phone OTP = " + phoneOtp);
+
+
+        SignupVerification signup = signupVerificationRepository.findByEmail(normalizedEmail)
                 .orElse(new SignupVerification());
 
         signup.setName(name);
-        signup.setEmail(email);
+        signup.setEmail(normalizedEmail);
         signup.setPhone(phone);
         signup.setPasswordHash(passwordEncoder.encode(password));
         signup.setCompanyName(companyName);
@@ -72,6 +78,8 @@ public class SignupFlowService {
         signup.setExpiresAt(LocalDateTime.now().plusMinutes(10));
 
         signupVerificationRepository.save(signup);
+
+        System.out.println("Saved signup verification");
 
         emailService.sendEmail(email, "Your CRM Email OTP", "Your OTP is: " + emailOtp);
         twilioService.sendSmsOtp(phone, "Your CRM Phone OTP is: " + phoneOtp);
