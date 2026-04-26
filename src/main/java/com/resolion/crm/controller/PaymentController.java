@@ -1,6 +1,7 @@
 package com.resolion.crm.controller;
 
-import com.razorpay.Subscription;
+
+import com.resolion.crm.entity.Subscription;
 import com.resolion.crm.entity.CompanySetting;
 import com.resolion.crm.respository.CompanySettingRepository;
 import com.resolion.crm.respository.SubscriptionRepository;
@@ -45,6 +46,8 @@ public class PaymentController {
 
        int amount = planService.getPlanAmount(plan);
 
+       RazorpayClient razorpayClient = new RazorpayClient("KEY_ID", "KEY_SECRET");
+
        JSONObject options = new JSONObject();
        options.put("amount", amount);
        options.put("currency", "INR");
@@ -78,7 +81,7 @@ public class PaymentController {
                                  @RequestParam String plan){
 
         CompanySetting setting = companySettingRepository.findByCompanyId(companyId)
-                .orElseThrow();
+                .orElseThrow(()  -> new RuntimeException("Company settings not found"));;
 
         setting.setPlanName(plan.toUpperCase());
 
@@ -87,9 +90,7 @@ public class PaymentController {
             setting.setMaxLeads(5000);
             setting.setMaxAiReports(100);
             setting.setMaxExports(200);
-        }
-
-        if ("ENTERPRISE".equalsIgnoreCase(plan)) {
+        } else if ("ENTERPRISE".equalsIgnoreCase(plan)) {
             setting.setMaxUsers(100);
             setting.setMaxLeads(50000);
             setting.setMaxAiReports(1000);
@@ -100,9 +101,10 @@ public class PaymentController {
 
         Subscription sub = new Subscription();
         sub.setCompanyId(companyId);
-        sub.setPlan(plan);
+        sub.setPlan(plan.toUpperCase());
         sub.setStatus("ACTIVE");
         sub.setPaymentId(paymentId);
+       // sub.setStartDate(LocalDateTime.now().toString());
 
         String now = LocalDateTime.now().toString();
         sub.setStartDate(now);
@@ -113,12 +115,12 @@ public class PaymentController {
         subscriptionRepository.save(sub);
 
         return "Subscription activated";
-        return paymentService.activateSubscription(companyId, paymentId);
+       // return paymentService.activateSubscription(companyId, paymentId);
     }
 
     @GetMapping("/history")
     public List<Subscription> paymentHistory(@RequestParam Long companyId) {
-        return subscriptionRepository.findByCompanyId(companyId);
+        return subscriptionRepository.findAllByCompanyId(companyId);
     }
 
 

@@ -20,6 +20,8 @@ public class Subscription {
     private String plan;
     private String status;
     private String paymentId;
+    private String startDate;
+    private String endDate;
 
     // ✅ ADD THIS
     public Long getId() { return id; }
@@ -35,4 +37,10 @@ public class Subscription {
 
     public String getPaymentId() { return paymentId; }
     public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
+
+    public String getStartDate() { return startDate; }
+    public void setStartDate(String startDate) { this.startDate = startDate; }
+
+    public String getEndDate() { return endDate; }
+    public void setEndDate(String endDate) { this.endDate = endDate; }
 }
