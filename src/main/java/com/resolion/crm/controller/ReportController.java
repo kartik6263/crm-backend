@@ -100,17 +100,7 @@ public class ReportController {
                 folder.setVisible(true);
                 folder.setSystemFolder(true);
                 reportFolderRepository.save(folder);
-            } else if ("Shared With Me".equalsIgnoreCase(folder)) {
-            List<Long> sharedIds = reportSharingRepository.findByCompanyIdAndSharedWithEmail(companyId, email)
-                    .stream()
-                    .map(ReportSharing::getReportId)
-                    .toList();
-
-            reports = reportDefinitionRepository.findByCompanyIdAndDeletedFalseOrderByIdDesc(companyId)
-                    .stream()
-                    .filter(r -> sharedIds.contains(r.getId()))
-                    .toList();
-        }
+            }
         }
     }
 
@@ -236,6 +226,16 @@ public class ReportController {
                     .toList();
         } else if ("Recently Deleted".equalsIgnoreCase(folder)) {
             reports = reportDefinitionRepository.findByCompanyIdAndDeletedTrueOrderByIdDesc(companyId);
+        } else if ("Shared With Me".equalsIgnoreCase(folder)) {
+            List<Long> sharedIds = reportSharingRepository.findByCompanyIdAndSharedWithEmail(companyId, email)
+                    .stream()
+                    .map(ReportSharing::getReportId)
+                    .toList();
+
+            reports = reportDefinitionRepository.findByCompanyIdAndDeletedFalseOrderByIdDesc(companyId)
+                    .stream()
+                    .filter(r -> sharedIds.contains(r.getId()))
+                    .toList();
         } else if (folder != null && !folder.isBlank() && !"All Reports".equalsIgnoreCase(folder)) {
             reports = reportDefinitionRepository.findByCompanyIdAndFolderNameAndDeletedFalseOrderByIdDesc(companyId, folder);
         } else {

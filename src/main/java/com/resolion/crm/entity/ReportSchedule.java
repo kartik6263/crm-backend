@@ -1,23 +1,25 @@
 package com.resolion.crm.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
-    @Table(name = "report_schedule")
-    public class ReportSchedule {
+@Data
+@Table(name = "report_schedules")
+public class ReportSchedule {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        private Long companyId;
-        private Long reportId;
-        private String userEmail;
-        private String frequency;
-        private String nextRunTime;
-        private String emailTo;
-        private Boolean active = true;
+    private Long reportId;
+    private Long companyId;
 
-        // getters setters
-    }
+    private String userEmail;
+    private String emailTo;
 
+    private String frequency;
+    private String nextRunTime;
+
+    private boolean active = true;
+}

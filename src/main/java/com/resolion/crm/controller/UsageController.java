@@ -1,5 +1,7 @@
 package com.resolion.crm.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import com.resolion.crm.entity.CompanySetting;
 import com.resolion.crm.entity.CompanyUsage;
 import com.resolion.crm.respository.CompanySettingRepository;
@@ -8,7 +10,7 @@ import com.resolion.crm.services.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/usage")
@@ -40,18 +42,21 @@ public class UsageController {
         CompanySetting setting = companySettingRepository.findByCompanyId(companyId)
                 .orElseThrow(() -> new RuntimeException("Company settings not found"));
 
-        return Map.of(
-                "planName", setting.getPlanName(),
-                "totalUsers", usage.getTotalUsers(),
-                "maxUsers", setting.getMaxUsers(),
-                "totalLeads", usage.getTotalLeads(),
-                "maxLeads", setting.getMaxLeads(),
-                "aiReportsUsed", usage.getAiReportsUsed(),
-                "maxAiReports", setting.getMaxAiReports(),
-                "exportsUsed", usage.getExportsUsed(),
-                "maxExports", setting.getMaxExports(),
-                "smsOtpUsed", usage.getSmsOtpUsed(),
-                "maxSmsOtp", setting.getMaxSmsOtp()
-        );
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("planName", setting.getPlanName());
+        map.put("totalUsers", usage.getTotalUsers());
+        map.put("maxUsers", setting.getMaxUsers());
+        map.put("totalLeads", usage.getTotalLeads());
+        map.put("maxLeads", setting.getMaxLeads());
+        map.put("aiReportsUsed", usage.getAiReportsUsed());
+        map.put("maxAiReports", setting.getMaxAiReports());
+        map.put("exportsUsed", usage.getExportsUsed());
+        map.put("maxExports", setting.getMaxExports());
+        map.put("smsOtpUsed", usage.getSmsOtpUsed());
+        map.put("maxSmsOtp", setting.getMaxSmsOtp());
+
+        return map;
+
     }
 }
