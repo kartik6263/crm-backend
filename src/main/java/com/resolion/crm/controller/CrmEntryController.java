@@ -52,15 +52,6 @@ public class CrmEntryController {
         this.CrmService = crmService;
         this.companyAccessService = companyAccessService;
     }
-   /* private final crmService crmService;
-    private final CompanyAccessService companyAccessService;
-
-    public CrmEntryController(crmService crmService,
-                              CompanyAccessService companyAccessService) {
-        this.crmService = crmService;
-        this.companyAccessService = companyAccessService;
-    }*/
-
 
 
     private final Logger log =
@@ -72,12 +63,7 @@ public class CrmEntryController {
     }
 
     /// ///////////
-    /* @PostMapping("/register")
-  public String registerUser(@RequestBody databaseCRM user) {
-       user.setRole("USER");
-     CrmService.registerUser(user);
-        return CrmService.registerUser(user);
-    }*/
+
     @PostMapping("/register")
     public String registerUser(@RequestBody databaseCRM user) {
         user.setRole("USER");
@@ -106,25 +92,6 @@ public class CrmEntryController {
         return "Company and owner account created successfully";
     }
 
-    /*@PostMapping("/login")
-    public CompanyLoginResponse login(@RequestBody LoginRequest request) {
-
-        String normalizedEmail = request.getEmail().trim().toLowerCase();
-
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        normalizedEmail,
-                        request.getPassword()
-                )
-        );
-
-        return crmService.multiCompanyLogin(
-                normalizedEmail,
-                request.getPassword()
-        );
-    }
-    */
-
 
 
     @PostMapping("/start-signup")
@@ -139,10 +106,6 @@ public class CrmEntryController {
         );
     }
 
-   // @PostMapping("/verify-signup-otp")
-    //public String verifySignupOtp(@RequestBody VerifyOtpRequest request) {
-      //  return authFlowService.verifySignupOtp(request.getEmail(), request.getOtp());
-    //}
 
 
     @PostMapping("/verify-email-otp")

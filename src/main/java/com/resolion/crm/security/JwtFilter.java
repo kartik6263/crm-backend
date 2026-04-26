@@ -1,6 +1,8 @@
 package com.resolion.crm.security;
 
 
+import com.resolion.crm.entity.CompanySetting;
+import com.resolion.crm.entity.Subscription;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -96,5 +99,26 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+
+
+    public void checkSubscription(Long companyId) {
+        Subscription sub = subscriptionRepository
+                .findTopByCompanyIdOrderByIdDesc(companyId)
+                .orElse(null);
+
+        if (sub == null) return;
+
+        if ("ACTIVE".equalsIgnoreCase(sub.getStatus())) {
+            if (LocalDateTime.parse(sub.getEndDate()).isBefore(LocalDateTime.now())) {
+                sub.setStatus("EXPIRED");
+                subscriptionRepository.save(sub);
+
+                CompanySetting setting = companySettingRepository.findByCompanyId(companyId).orElseThrow();
+                setting.setPlanName("FREE");
+                companySettingRepository.save(setting);
+            }
+        }
     }
 }
