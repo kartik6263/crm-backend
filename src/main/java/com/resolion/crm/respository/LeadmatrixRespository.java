@@ -38,4 +38,6 @@ public interface LeadmatrixRespository extends JpaRepository<LeadmatrixEntity, L
     long countByCompanyIdAndSource(Long companyId, String source);
     long countByCompanyIdAndCreatedDate(Long companyId, String createdDate);
 
+    List<LeadmatrixEntity> findByCompanyIdAndAssignedToIsNotNull(Long companyId);
+    long countByCompanyIdAndAssignedToAndStatus(Long companyId, String assignedTo, String status);
 }

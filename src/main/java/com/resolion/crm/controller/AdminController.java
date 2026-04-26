@@ -10,6 +10,7 @@ import com.resolion.crm.entity.Subscription;
 import com.resolion.crm.entity.databaseCRM;
 import com.resolion.crm.respository.*;
 import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.services.UsageLimitService;
 import com.resolion.crm.services.crmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private UsageLimitService usageLimitService;
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
@@ -124,10 +128,15 @@ public class AdminController {
     }
 
 
+
     @PostMapping("/create-user")
+
     public ResponseEntity<?> createUser(@RequestParam String adminEmail,
                                         @RequestParam Long companyId,
                                         @RequestBody databaseCRM user) {
+        /// ///////////////////
+        usageLimitService.checkUserLimit(companyId);
+        /// //////////////////////////
 
         if (!companyAccessService.hasCompanyAccess(adminEmail, companyId)) {
             return ResponseEntity.status(403).body("No company access");
@@ -180,6 +189,10 @@ public class AdminController {
                 .stream()
                 .map(CompanyMember::getUserId)
                 .toList();
+
+        /// ////////////////////
+        usageLimitService.incrementUsers(companyId);
+        /// /////////////////////////////
 
         return CrmRespository.findAllById(userIds);
     }

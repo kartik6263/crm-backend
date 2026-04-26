@@ -1,5 +1,6 @@
 package com.resolion.crm.services;
 
+import com.resolion.crm.dpo.ReportRunResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,6 +33,15 @@ public class EmailService {
             throw new RuntimeException("Failed to send email: " + e.getMessage());
         }
     }
+
+
+
+    public void sendReport(String email, ReportRunResponse data) {
+        System.out.println("Sending report to " + email);
+        // integrate SMTP later
+    }
+
+
 
 
 }

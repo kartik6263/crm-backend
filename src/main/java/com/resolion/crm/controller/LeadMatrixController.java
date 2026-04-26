@@ -35,6 +35,10 @@ public class LeadMatrixController {
     crmService crmService;
 
     @Autowired
+    private UsageLimitService usageLimitService;
+
+
+    @Autowired
     private crmRespository crmRespository;
 
     @Autowired
@@ -181,11 +185,14 @@ public class LeadMatrixController {
 
         // OPTIONAL (best practice)
         lead.setAssignedTo(user.getEmail());
-
+/// ///////////////////
+        usageLimitService.checkLeadLimit(companyId);
+/// ////////////////////////////////////
 
         LeadmatrixEntity saved = leadServices.saveLead(lead);
 
         saveActivity(saved.getId(), "LEAD_CREATED", "Lead created: " + saved.getName());
+
 
         if (saved.getAssignedTo() != null && !saved.getAssignedTo().isBlank()) {
             emailService.sendEmail(
@@ -195,7 +202,9 @@ public class LeadMatrixController {
             );
             saveActivity(saved.getId(), "LEAD_ASSIGNED", "Lead assigned to: " + saved.getAssignedTo());
         }
-
+/// /////////////
+        usageLimitService.incrementLeads(companyId);
+        /// //////////////////////////
         return ResponseEntity.ok(saved);
     }
 
