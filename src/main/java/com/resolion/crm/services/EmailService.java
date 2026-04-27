@@ -15,9 +15,12 @@ public class EmailService {
 
     public void sendEmail(String to, String subject, String text){
 
-        if(mailSender == null){
+       /* if(mailSender == null){
             System.out.println("Email service not configured");
             return;
+        }*/
+        if (mailSender == null) {
+            throw new RuntimeException("Email service not configured");
         }
 
         try {

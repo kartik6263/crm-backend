@@ -19,16 +19,22 @@ public class TwilioService {
     private String fromNumber;
 
         public void sendSmsOtp(String to, String messageText) {
+
             if (accountSid == null || accountSid.isBlank()
                     || authToken == null || authToken.isBlank()
                     || fromNumber == null || fromNumber.isBlank()) {
-                System.out.println("Twilio not configured");
-                    return;
+                throw new RuntimeException("Twilio not configured. Check env variables.");
+
+                //System.out.println("Twilio not configured");
+                  //  return;
                 }
 
 
                 try{
                     Twilio.init(accountSid, authToken);
+
+                    String cleanPhone = to.replace("+91", "").replaceAll("\\D", "");
+
 
                     Message message = Message.creator(
                             new PhoneNumber("whatsapp:+91" + to),
