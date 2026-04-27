@@ -33,11 +33,12 @@ public class TwilioService {
                 try{
                     Twilio.init(accountSid, authToken);
 
-                    String cleanPhone = to.replace("+91", "").replaceAll("\\D", "");
+                    String cleanPhone = to.replace(("+91","").replaceAll("\\D", "");
 
 
                     Message message = Message.creator(
-                            new PhoneNumber("whatsapp:+91" + to),
+                           // new PhoneNumber("whatsapp:+91" + to),
+                            new PhoneNumber("whatsapp:+91" + cleanPhone),
                             new PhoneNumber("whatsapp:" + fromNumber),
                             messageText
                     ).create();
