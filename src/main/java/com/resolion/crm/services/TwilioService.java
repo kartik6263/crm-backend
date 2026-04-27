@@ -18,38 +18,68 @@ public class TwilioService {
     @Value("${twilio.phoneNumber:}")
     private String fromNumber;
 
-        public void sendSmsOtp(String to, String messageText) {
+    public void sendSmsOtp(String to, String messageText) {
 
-            if (accountSid == null || accountSid.isBlank()
-                    || authToken == null || authToken.isBlank()
-                    || fromNumber == null || fromNumber.isBlank()) {
-                throw new RuntimeException("Twilio not configured. Check env variables.");
+        if (accountSid == null || accountSid.isBlank()
+                || authToken == null || authToken.isBlank()
+                || fromNumber == null || fromNumber.isBlank()) {
+            throw new RuntimeException("Twilio not configured. Check env variables.");
 
-                //System.out.println("Twilio not configured");
-                  //  return;
-                }
-
-
-                try{
-                    Twilio.init(accountSid, authToken);
-
-                    String cleanPhone = to.replace("+91", "").replaceAll("\\D", "");
-
-
-                    Message message = Message.creator(
-                           // new PhoneNumber("whatsapp:+91" + to),
-                            new PhoneNumber("whatsapp:+91" + cleanPhone),
-                            new PhoneNumber("whatsapp:" + fromNumber),
-                            messageText
-                    ).create();
-
-                    System.out.println("SMS sent successfully. SID: " + message.getSid());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Failed to send SMS OTP: " + e.getMessage());
-                }
-            }
+            //System.out.println("Twilio not configured");
+            //  return;
         }
+
+
+        try {
+            Twilio.init(accountSid, authToken);
+
+            /// ///////////////////////////////////////////////////////
+            if (!to.startsWith("+")) {
+                to = "+91" + to;
+            }
+
+            Twilio.init(accountSid, authToken);
+/// /////////////////////////////////////////////////////////////////////////////////
+
+            String cleanPhone = to.replace("+91", "").replaceAll("\\D", "");
+
+
+            Message message = Message.creator(
+                    // new PhoneNumber("whatsapp:+91" + to),
+                    new PhoneNumber("whatsapp:+91" + cleanPhone),
+                    new PhoneNumber("whatsapp:" + fromNumber),
+                    messageText
+            ).create();
+
+            System.out.println("SMS sent successfully. SID: " + message.getSid());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send SMS OTP: " + e.getMessage());
+        }
+    }
+
+    public void sendWhatsAppMessage(String to, String messageText) {
+        try {
+            if (!to.startsWith("+")) {
+                to = "+91" + to;
+            }
+
+            Twilio.init(accountSid, authToken);
+
+            Message message = Message.creator(
+                    new PhoneNumber("whatsapp:" + to),
+                    new PhoneNumber("whatsapp:" + fromNumber),
+                    messageText
+            ).create();
+
+            System.out.println("WHATSAPP SENT SUCCESSFULLY SID = " + message.getSid());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("WhatsApp failed: " + e.getMessage());
+        }
+    }
+}
 
 
 
