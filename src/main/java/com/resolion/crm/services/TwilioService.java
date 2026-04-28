@@ -33,25 +33,29 @@ public class TwilioService {
         try {
             Twilio.init(accountSid, authToken);
 
-            /// ///////////////////////////////////////////////////////
-            if (!to.startsWith("+")) {
-                to = "+91" + to;
-            }
-
-            Twilio.init(accountSid, authToken);
-/// /////////////////////////////////////////////////////////////////////////////////
-
             String cleanPhone = to.replace("+91", "").replaceAll("\\D", "");
 
+            System.out.println("CALLING TWILIO SMS");
+            System.out.println("TO = +91" + cleanPhone);
+            System.out.println("FROM = " + fromNumber);
 
-            Message message = Message.creator(
+
+           /* Message message = Message.creator(
                     // new PhoneNumber("whatsapp:+91" + to),
                     new PhoneNumber("whatsapp:+91" + cleanPhone),
                     new PhoneNumber("whatsapp:" + fromNumber),
                     messageText
+            ).create(); */
+
+            Message message = Message.creator(
+                    new PhoneNumber("+91" + cleanPhone),
+                    new PhoneNumber(fromNumber),
+                    messageText
             ).create();
 
+
             System.out.println("SMS sent successfully. SID: " + message.getSid());
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to send SMS OTP: " + e.getMessage());
