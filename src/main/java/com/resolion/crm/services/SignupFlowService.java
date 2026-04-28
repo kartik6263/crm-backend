@@ -81,8 +81,14 @@ public class SignupFlowService {
 
         System.out.println("Saved signup verification");
 
-        emailService.sendEmail(normalizedEmail, "Your CRM Email OTP", "Your OTP is: " + emailOtp);
+        System.out.println("CALLING PHONE OTP SEND");
         twilioService.sendSmsOtp(phone, "Your CRM Phone OTP is: " + phoneOtp);
+
+        System.out.println("CALLING EMAIL OTP SEND");
+        emailService.sendEmail(normalizedEmail, "Your CRM Email OTP", "Your OTP is: " + emailOtp);
+
+       // emailService.sendEmail(normalizedEmail, "Your CRM Email OTP", "Your OTP is: " + emailOtp);
+      //  twilioService.sendSmsOtp(phone, "Your CRM Phone OTP is: " + phoneOtp);
 
         return "OTP sent to email and phone";
     }
