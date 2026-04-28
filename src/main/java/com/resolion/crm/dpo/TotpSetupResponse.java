@@ -1,4 +1,4 @@
-package com.resolion.crm.dpo;
+/*package com.resolion.crm.dpo;
 
 import java.util.List;
 
@@ -16,4 +16,4 @@ public class TotpSetupResponse {
     public String getSecret() { return secret; }
     public String getQrUrl() { return qrUrl; }
     public List<String> getBackupCodes() { return backupCodes; }
-}
+}*/

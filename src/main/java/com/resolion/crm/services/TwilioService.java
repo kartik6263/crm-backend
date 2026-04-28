@@ -1,4 +1,4 @@
-package com.resolion.crm.services;
+/*package com.resolion.crm.services;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -47,7 +47,7 @@ public class TwilioService {
                     messageText
             ).create(); */
 
-            Message message = Message.creator(
+           /* Message message = Message.creator(
                     new PhoneNumber("+91" + cleanPhone),
                     new PhoneNumber(fromNumber),
                     messageText
@@ -84,7 +84,7 @@ public class TwilioService {
         }
     }
 }
-
+*/
 
 
 

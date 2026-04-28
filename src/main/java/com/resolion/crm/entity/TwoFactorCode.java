@@ -1,4 +1,4 @@
-package com.resolion.crm.entity;
+/*package com.resolion.crm.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -29,4 +29,4 @@ public class TwoFactorCode {
 
     public Boolean getUsed() { return used; }
     public void setUsed(Boolean used) { this.used = used; }
-}
+}*/

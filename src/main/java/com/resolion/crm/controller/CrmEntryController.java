@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.resolion.crm.services.crmService;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/crm")
 public class CrmEntryController {
@@ -26,8 +29,8 @@ public class CrmEntryController {
     @Autowired
     private crmService crmService;
 
-    @Autowired
-    SignupFlowService signupFlowService;
+   // @Autowired
+    //SignupFlowService signupFlowService;
 
     @Autowired
     private UserTwoFactorService userTwoFactorService;
@@ -93,7 +96,7 @@ public class CrmEntryController {
     }
 
 
-
+/*  two factor and otp based
     @PostMapping("/start-signup")
     public String startSignup(@RequestBody StartSignupRequest request) {
         return signupFlowService.startSignup(
@@ -167,9 +170,9 @@ public class CrmEntryController {
         return crmService.multiCompanyLoginAfter2FA(email);
     }
 
+*/
 
-
-  /*  @PostMapping("/login")
+    @PostMapping("/login")
     public CompanyLoginResponse multiCompanyLogin(String email, String password) {
         databaseCRM user = crmRespository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -183,7 +186,7 @@ public class CrmEntryController {
 
         return new CompanyLoginResponse(token, user.getEmail(), companies);
     }
-   // public LoginResponse login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@RequestBody LoginRequest request) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -197,10 +200,10 @@ public class CrmEntryController {
 
         String token = jwtUtil.generateToken(user.getEmail());
 
-      // return new LoginResponse(token, user.getRole(), user.getEmail());
+       return new LoginResponse(token, user.getRole(), user.getEmail());
 
 
-    }*/
+    }
 
     @PostMapping("/google-login")
     public LoginResponse googleLogin(@RequestBody GoogleLoginRequest request) {

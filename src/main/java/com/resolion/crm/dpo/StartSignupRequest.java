@@ -1,4 +1,4 @@
-package com.resolion.crm.dpo;
+/*package com.resolion.crm.dpo;
 
 public class StartSignupRequest {
     private String name;
@@ -25,4 +25,4 @@ public class StartSignupRequest {
 
     public String getCaptchaToken() { return captchaToken; }
     public void setCaptchaToken(String captchaToken) { this.captchaToken = captchaToken; }
-}
+}*/

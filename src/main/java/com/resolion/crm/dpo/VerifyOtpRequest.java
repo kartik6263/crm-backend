@@ -1,4 +1,4 @@
-package com.resolion.crm.dpo;
+/*package com.resolion.crm.dpo;
 
 public class VerifyOtpRequest {
     private String email;
@@ -9,4 +9,4 @@ public class VerifyOtpRequest {
 
     public String getOtp() { return otp; }
     public void setOtp(String otp) { this.otp = otp; }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.resolion.crm.dpo;
+/*package com.resolion.crm.dpo;
 
 public class TotpLoginRequest {
     private String email;
@@ -13,4 +13,4 @@ public class TotpLoginRequest {
 
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
-}
+}*/

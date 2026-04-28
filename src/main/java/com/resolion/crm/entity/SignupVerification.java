@@ -1,4 +1,4 @@
-package com.resolion.crm.entity;
+/*package com.resolion.crm.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -61,4 +61,4 @@ public class SignupVerification {
 
     public LocalDateTime getExpiresAt() { return expiresAt; }
     public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
-}
+}*/

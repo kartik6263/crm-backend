@@ -1,4 +1,4 @@
-package com.resolion.crm.services;
+/*package com.resolion.crm.services;
 
 import org.springframework.stereotype.Service;
 
@@ -14,3 +14,4 @@ public class OtpService {
         return String.valueOf(otp);
     }
 }
+*/

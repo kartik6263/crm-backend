@@ -10,7 +10,6 @@ import lombok.*;
 public class databaseCRM {
 
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,27 +26,29 @@ public class databaseCRM {
     private String password;
 
 
-   // private String role; // Admin or Sales
+    // private String role; // Admin or Sales
     //@Enumerated(EnumType.STRING)
     //private CompanyRole role;
-   private String role;
-    private String twoFactorSecret;
-    private Boolean twoFactorEnabled = false;
-    private String backupCodes;
+    private String role;
+    //private String twoFactorSecret;
+    // private Boolean twoFactorEnabled = false;
+    //  private String backupCodes;
 
-   // private Long companyId;
+    // private Long companyId;
 
 
     public databaseCRM() {
         //TODO Auto-generated constructor stub
     }
+
     public databaseCRM(String name, String password, String email, String role, String phone) {
-        this.name= name;
+        this.name = name;
         this.password = password;
         this.email = email;
         this.role = role;
         this.phone = phone;
     }
+
     public Long getId() {
         return id;
     }
@@ -93,33 +94,36 @@ public class databaseCRM {
     }
 
     //public Long getCompanyId() {
-       // return companyId;
+    // return companyId;
     //}
 
-   // public void setCompanyId(Long companyId) {
-        //this.companyId = companyId;
-   //}
-   public String getTwoFactorSecret() {
-       return twoFactorSecret;
-   }
+    // public void setCompanyId(Long companyId) {
+    //this.companyId = companyId;
+    //}
 
-    public void setTwoFactorSecret(String twoFactorSecret) {
-        this.twoFactorSecret = twoFactorSecret;
-    }
 
-    public Boolean getTwoFactorEnabled() {
-        return twoFactorEnabled;
-    }
+    // public String getTwoFactorSecret() {
+    // return twoFactorSecret;
+    //  }
 
-    public void setTwoFactorEnabled(Boolean twoFactorEnabled) {
-        this.twoFactorEnabled = twoFactorEnabled;
-    }
+    // public void setTwoFactorSecret(String twoFactorSecret) {
+    //    this.twoFactorSecret = twoFactorSecret;
+    // }
 
-    public String getBackupCodes() {
-        return backupCodes;
-    }
+    //  public Boolean getTwoFactorEnabled() {
+    //     return twoFactorEnabled;
+    //  }
 
-    public void setBackupCodes(String backupCodes) {
-        this.backupCodes = backupCodes;
-    }
+    //  public void setTwoFactorEnabled(Boolean twoFactorEnabled) {
+    //      this.twoFactorEnabled = twoFactorEnabled;
+    //  }
+
+    // public String getBackupCodes() {
+    //return backupCodes;
+    // }
+
+    // public void setBackupCodes(String backupCodes) {
+    //  this.backupCodes = backupCodes;
+    //  }
+//}
 }

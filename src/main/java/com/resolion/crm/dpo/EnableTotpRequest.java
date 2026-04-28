@@ -1,4 +1,4 @@
-package com.resolion.crm.dpo;
+/*package com.resolion.crm.dpo;
 
 public class EnableTotpRequest {
     private String email;
@@ -9,4 +9,4 @@ public class EnableTotpRequest {
 
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
-}
+}*/
