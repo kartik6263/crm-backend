@@ -71,8 +71,8 @@ public class LeadMatrixController {
     @Autowired
     private ExcelLeadService excelLeadService;
 
-    @Autowired
-    private TwilioService twilioService;
+//    @Autowired
+//    private TwilioService twilioService;
 
     public LeadMatrixController(leadServices leadServices,
                                 crmService crmService,
@@ -1016,11 +1016,11 @@ public class LeadMatrixController {
         return "Message Sent";
     }*/
 
-    @PostMapping("/send-whatsapp")
-    public String sendMessage(@RequestParam String phone) {
-        twilioService.sendSmsOtp(phone, "Hello from CRM 🚀");
-        return "Message Sent";
-    }
+//    @PostMapping("/send-whatsapp")
+//    public String sendMessage(@RequestParam String phone) {
+//        twilioService.sendSmsOtp(phone, "Hello from CRM 🚀");
+//        return "Message Sent";
+//    }
 
     @GetMapping("/page")
     public ResponseEntity<?> getLeadsPage(
