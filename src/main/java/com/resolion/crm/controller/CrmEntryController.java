@@ -172,8 +172,45 @@ public class CrmEntryController {
 
 */
 
+//    @PostMapping("/login")
+//    public CompanyLoginResponse multiCompanyLogin(String email, String password) {
+//        databaseCRM user = crmRespository.findByEmail(email)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        if (!passwordEncoder.matches(password, user.getPassword())) {
+//            throw new RuntimeException("Invalid password");
+//        }
+//
+//        String token = jwtUtil.generateToken(user.getEmail());
+//        List<Map<String, Object>> companies = companyAccessService.getUserCompanies(email);
+//
+//        return new CompanyLoginResponse(token, user.getEmail(), companies);
+//    }
+//    public LoginResponse login(@RequestBody LoginRequest request) {
+//
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        request.getEmail(),
+//                        request.getPassword()
+//                )
+//        );
+//
+//        databaseCRM user = crmRespository.findByEmail(request.getEmail())
+//                .orElseThrow(() -> new RuntimeException("User not found in DB"));
+//
+//        String token = jwtUtil.generateToken(user.getEmail());
+//
+//       return new LoginResponse(token, user.getRole(), user.getEmail());
+//
+//
+//    }
+
     @PostMapping("/login")
-    public CompanyLoginResponse multiCompanyLogin(String email, String password) {
+    public CompanyLoginResponse multiCompanyLogin(@RequestBody LoginRequest request) {
+
+        String email = request.getEmail().trim().toLowerCase();
+        String password = request.getPassword();
+
         databaseCRM user = crmRespository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -184,31 +221,17 @@ public class CrmEntryController {
         String token = jwtUtil.generateToken(user.getEmail());
         List<Map<String, Object>> companies = companyAccessService.getUserCompanies(email);
 
+        if (companies == null || companies.isEmpty()) {
+            throw new RuntimeException("User is not linked to any company");
+        }
+
         return new CompanyLoginResponse(token, user.getEmail(), companies);
     }
-    public LoginResponse login(@RequestBody LoginRequest request) {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-
-        databaseCRM user = crmRespository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found in DB"));
-
-        String token = jwtUtil.generateToken(user.getEmail());
-
-       return new LoginResponse(token, user.getRole(), user.getEmail());
-
-
-    }
-
-    @PostMapping("/google-login")
-    public LoginResponse googleLogin(@RequestBody GoogleLoginRequest request) {
-        return CrmService.googleLogin(request.getIdToken());
-    }
+//    @PostMapping("/google-login")
+//    public LoginResponse googleLogin(@RequestBody GoogleLoginRequest request) {
+//        return CrmService.googleLogin(request.getIdToken());
+//    }
 
 }
 
