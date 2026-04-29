@@ -16,7 +16,8 @@ public class Subscription {
     private Company company;
 
 
-     @Column(name = "company-id", insertable = false, updatable = false)
+    // @Column(name = "company-id", insertable = false, updatable = false)
+    @Column(name = "company_id", insertable = false, updatable = false)
      private Long companyId;
 
     private String plan;
