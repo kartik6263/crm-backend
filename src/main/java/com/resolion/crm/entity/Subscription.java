@@ -16,8 +16,8 @@ public class Subscription {
     private Company company;
 
 
-    // @Column(name = "company-id", insertable = false, updatable = false)
-   // private Long companyId;
+     @Column(name = "company-id", insertable = false, updatable = false)
+     private Long companyId;
 
     private String plan;
     private String status;
@@ -28,8 +28,8 @@ public class Subscription {
     // ✅ ADD THIS
     public Long getId() { return id; }
 
-    //public Long getCompanyId() { return companyId; }
-   // public void setCompanyId(Long companyId) { this.companyId = companyId; }
+    public Long getCompanyId() { return companyId; }
+    public void setCompanyId(Long companyId) { this.companyId = companyId; }
 
     public Company getCompany() { return company; }
     public void setCompany(Company company) { this.company = company; }
