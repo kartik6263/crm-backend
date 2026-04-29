@@ -6,17 +6,18 @@ import jakarta.persistence.*;
 @Table(name="subscriptions")
 public class Subscription {
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
-   // @Column(name = "company-id", insertable = false, updatable = false)
-    private Long companyId;
+
+    // @Column(name = "company-id", insertable = false, updatable = false)
+   // private Long companyId;
 
     private String plan;
     private String status;
@@ -27,8 +28,12 @@ public class Subscription {
     // ✅ ADD THIS
     public Long getId() { return id; }
 
-    public Long getCompanyId() { return companyId; }
-    public void setCompanyId(Long companyId) { this.companyId = companyId; }
+    //public Long getCompanyId() { return companyId; }
+   // public void setCompanyId(Long companyId) { this.companyId = companyId; }
+
+    public Company getCompany() { return company; }
+    public void setCompany(Company company) { this.company = company; }
+
 
     public String getPlan() { return plan; }
     public void setPlan(String plan) { this.plan = plan; }
