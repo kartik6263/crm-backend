@@ -15,8 +15,9 @@ public class Subscription {
     private Long id;
 
 
-    @Column(name = "company-id", insertable = false, updatable = false)
+   // @Column(name = "company-id", insertable = false, updatable = false)
     private Long companyId;
+
     private String plan;
     private String status;
     private String paymentId;

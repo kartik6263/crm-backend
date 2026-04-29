@@ -188,46 +188,6 @@ public class crmService {
 
 
 
-    @Value("${google.client.id}")
-    private String googleClientId;
-
-    public LoginResponse googleLogin(String idTokenString) {
-        try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                    new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance()
-            ).setAudience(java.util.Collections.singletonList(googleClientId)).build();
-
-            GoogleIdToken idToken = verifier.verify(idTokenString);
-
-            if (idToken == null) {
-                throw new RuntimeException("Invalid Google ID token");
-            }
-
-            GoogleIdToken.Payload payload = idToken.getPayload();
-
-            String email = payload.getEmail();
-            String name = (String) payload.get("name");
-
-            databaseCRM user = crmRepository.findByEmail(email).orElse(null);
-
-            if (user == null) {
-                user = new databaseCRM();
-                user.setName(name != null ? name : "Google User");
-                user.setEmail(email);
-                user.setPhone("");
-                user.setPassword(passwordEncoder.encode("GOOGLE_AUTH_USER"));
-                user.setRole("USER");
-                crmRepository.save(user);
-            }
-
-            String token = jwtutil.generateToken(user.getEmail());
-            return new LoginResponse(token, user.getRole(), user.getEmail());
-
-        } catch (Exception e) {
-            throw new RuntimeException("Google login failed: " + e.getMessage());
-        }
-    }
     }
 
 

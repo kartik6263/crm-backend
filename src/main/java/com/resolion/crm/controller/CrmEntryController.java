@@ -228,10 +228,7 @@ public class CrmEntryController {
         return new CompanyLoginResponse(token, user.getEmail(), companies);
     }
 
-//    @PostMapping("/google-login")
-//    public LoginResponse googleLogin(@RequestBody GoogleLoginRequest request) {
-//        return CrmService.googleLogin(request.getIdToken());
-//    }
+
 
 }
 
