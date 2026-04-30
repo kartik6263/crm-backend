@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
     List<AuditLog>findTop30ByCompanyIdOrderByIdDesc(Long companyId);
+    List<AuditLog> findByCompanyIdOrderByIdDesc(Long companyId);
+
 }

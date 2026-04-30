@@ -10,7 +10,9 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "company_id")
     private Long companyId;
+
     private String userEmail;
     private String action;
     private String moduleName;
