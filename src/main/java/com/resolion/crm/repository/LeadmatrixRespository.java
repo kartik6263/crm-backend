@@ -14,7 +14,12 @@ public interface LeadmatrixRespository extends JpaRepository<LeadmatrixEntity, L
 
     Page<LeadmatrixEntity> findAll(Pageable pageable);
 
-    List<LeadmatrixEntity> findByName(String name);
+   // List<LeadmatrixEntity> findByName(String name);
+   List<LeadmatrixEntity> findByFirstName(String firstName);
+//   List<LeadmatrixEntity> findByFirstNameAndLastName(
+//           String firstName,
+//           String lastName
+//   );
     List<LeadmatrixEntity> findByStatus(String status);
     List<LeadmatrixEntity> findByAssignedTo(String assignedTo);
     List<LeadmatrixEntity> findByCompanyId(Long companyId);
@@ -34,6 +39,7 @@ public interface LeadmatrixRespository extends JpaRepository<LeadmatrixEntity, L
 
     @Override
     long count();
+    //long countByName(String name);
     long countByStatus(String status);
     long countByAssignedTo(String assignedTo);
     long countBySource(String source);

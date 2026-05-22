@@ -314,9 +314,14 @@ public class LeadMatrixController {
        return ResponseEntity.ok(lead);
    }
 
-    @GetMapping("/search/{name}")
-    public List<LeadmatrixEntity> searchLead(@PathVariable String name) {
-        return leadmatrixRepository.findByName(name);
+    @GetMapping("/search/{firstName}")
+    public List<LeadmatrixEntity> searchLead(
+            @PathVariable String firstName
+    ) {
+
+        return leadmatrixRepository
+                .findByFirstName(firstName);
+
     }
 
     @GetMapping("/lead/my")
