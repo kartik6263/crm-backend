@@ -44,7 +44,7 @@ public class ExcelLeadService {
                if (row.getCell(0) == null) continue;
 
                LeadmatrixEntity lead = new LeadmatrixEntity();
-               lead.setName(row.getCell(0).getStringCellValue());
+               lead.set(row.getCell(0).getStringCellValue());
                lead.setEmail(row.getCell(1) != null ? row.getCell(1).getStringCellValue() : "");
                lead.setPhone(row.getCell(2) != null ? row.getCell(2).getStringCellValue() : "");
                lead.setStatus("NEW");

@@ -1,7 +1,8 @@
 package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.Invoice;
-import com.resolion.crm.entity.Quote;
+import com.resolion.crm.entity.QuoteEntity;
+import com.resolion.crm.entity.QuoteItemEntity;
 import com.resolion.crm.entity.SalesOrder;
 import com.resolion.crm.entity.PurchaseOrder;
 import com.resolion.crm.respository.InvoiceRepository;
@@ -45,13 +46,13 @@ public class BusinessDocumentController {
     }
 
     @GetMapping("/quotes")
-    public List<Quote> quotes(@RequestParam String email, @RequestParam Long companyId) {
+    public List<QuoteEntity> quotes(@RequestParam String email, @RequestParam Long companyId) {
         checkAccess(email, companyId);
         return quoteRepository.findByCompanyIdOrderByIdDesc(companyId);
     }
 
     @PostMapping("/quotes")
-    public Quote createQuote(@RequestParam String email, @RequestParam Long companyId, @RequestBody Quote quote) {
+    public QuoteEntity createQuote(@RequestParam String email, @RequestParam Long companyId, @RequestBody Quote quote) {
         checkAccess(email, companyId);
         quote.setCompanyId(companyId);
         quote.setCreatedBy(email);

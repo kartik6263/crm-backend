@@ -1,12 +1,22 @@
 package com.resolion.crm.respository;
 
-import com.resolion.crm.entity.SalesOrder;
+import com.resolion.crm.ENUMS.SalesOrderStatus;
+import com.resolion.crm.entity.SalesOrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
-    List<SalesOrder> findByCompanyIdOrderByIdDesc(Long companyId);
+public interface SalesOrderRepository extends JpaRepository<SalesOrderEntity, Long> {
+
+    List<SalesOrderEntity> findByCompanyIdOrderByIdDesc(Long companyId);
+
+    List<SalesOrderEntity> findByCompanyIdAndOwnerEmailOrderByIdDesc(Long companyId, String ownerEmail);
+
+    List<SalesOrderEntity> findByCompanyIdAndCreatedByOrderByIdDesc(Long companyId, String createdBy);
+
+    List<SalesOrderEntity> findByCompanyIdAndStatusOrderByIdDesc(Long companyId, SalesOrderStatus status);
+
     long countByCompanyId(Long companyId);
-    long countByCompanyIdAndStatus(Long companyId, String status);
+
+    long countByCompanyIdAndStatus(Long companyId, SalesOrderStatus status);
 }

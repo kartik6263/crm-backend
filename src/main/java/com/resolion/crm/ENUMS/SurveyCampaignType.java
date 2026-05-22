@@ -1,4 +1,15 @@
 package com.resolion.crm.ENUMS;
 
 public enum SurveyCampaignType {
+    NONE,
+    RESOLION_SURVEY,
+    CUSTOMER_FEEDBACK,
+    PRODUCT_FEEDBACK,
+    NPS_SURVEY,
+    CSAT_SURVEY,
+    EMPLOYEE_SURVEY,
+    MARKET_RESEARCH,
+    LEAD_QUALIFICATION,
+    EVENT_FEEDBACK,
+    OTHER
 }

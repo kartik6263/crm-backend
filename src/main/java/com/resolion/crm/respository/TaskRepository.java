@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface LeadTaskRepository extends JpaRepository<TaskEntity, Long> {
+public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
     List<TaskEntity>findByLeadId(Long leadId);
     List<TaskEntity>findByAssignedTo(String assignedTo);
 

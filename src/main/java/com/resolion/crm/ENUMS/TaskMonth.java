@@ -1,16 +1,16 @@
 package com.resolion.crm.ENUMS;
 
-public enum TaskMonthlyDay {
-    january,
-    febuary,
-    march,
-    april,
-    may,
-    june,
-    july,
-    agugst,
-    sepetember,
-    octuber,
-    november,
-    december
+public enum TaskMonth {
+    JAN,
+    FEB,
+    MAR,
+    APR,
+    MAY,
+    JUN,
+    JUL,
+    AUG,
+    SEP,
+    OCT,
+    NOV,
+    DEC
 }

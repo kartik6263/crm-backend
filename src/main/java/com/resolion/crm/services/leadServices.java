@@ -36,6 +36,14 @@ public class leadServices {
         return leadmatrixRespository.save(lead);
     }
 
+    public LeadmatrixEntity createLead(LeadmatrixEntity lead) {
+        if (lead.getStatus() == null || lead.getStatus().isBlank()) {
+            lead.setStatus("NEW");
+        }
+
+        lead.setScore(leadScoringService.calculateScore(lead));
+        return leadmatrixRepository.save(lead);
+    }
    /* public List<LeadmatrixEntity> getVisibleLeadsForUser(String email) {
         databaseCRM user = crmRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -61,7 +69,8 @@ public class leadServices {
        if (role == CompanyRole.SALES) {
            return leadmatrixRepository.findByCompanyIdAndAssignedTo(companyId, email);
        }
-       return leadmatrixRepository.findByCompanyId(companyId);
+       return leadmatrixRepository.findByCompanyIdAndCreatedBy(companyId, email);
+      // return leadmatrixRepository.findByCompanyId(companyId);
    }
 
     // Get All Leads
@@ -87,25 +96,92 @@ public class leadServices {
 
         LeadmatrixEntity oldLead = leadmatrixRespository.findById(id).orElse(null);
 
-        if (oldLead != null) {
-            oldLead.setName(newLead.getName());
-            oldLead.setEmail(newLead.getEmail());
-            oldLead.setPhone(newLead.getPhone());
-            oldLead.setSource(newLead.getSource());
-            oldLead.setAssignedTo(newLead.getAssignedTo());
-            oldLead.setStatus(newLead.getStatus());
-            oldLead.setLastActivity(newLead.getLastActivity());
-            return leadmatrixRespository.save(oldLead);
+        if (oldLead == null) {
+            return null;
         }
+        oldLead.setOwnerName(newLead.getOwnerName());
+        oldLead.setFirstName(newLead.getFirstName());
+        oldLead.setLastName(newLead.getLastName());
+        oldLead.setCompany(newLead.getCompany());
+        oldLead.setTitle(newLead.getTitle());
+        oldLead.setEmail(newLead.getEmail());
+        oldLead.setOptIn(newLead.isOptIn());
+        oldLead.setPhone(newLead.getPhone());
+        oldLead.setFax(newLead.getFax());
+        oldLead.setMobile(newLead.getMobile());
+        oldLead.setWebsite(newLead.getWebsite());
+        oldLead.setSource(newLead.getSource());
+        oldLead.setStatus(newLead.getStatus());
+        oldLead.setIndustry(newLead.getIndustry());
+        oldLead.setEmployees(newLead.getEmployees());
+        oldLead.setAnnualRevenue(newLead.getAnnualRevenue());
+        oldLead.setRating(newLead.getRating());
+        oldLead.setSkypeId(newLead.getSkypeId());
+        oldLead.setSecondaryEmail(newLead.getSecondaryEmail());
+        oldLead.setTwitter(newLead.getTwitter());
+        oldLead.setFacebook(newLead.getFacebook());
+        oldLead.setInstagram(newLead.getInstagram());
+        oldLead.setLinkedin(newLead.getLinkedin());
+        oldLead.setStreet(newLead.getStreet());
+        oldLead.setCity(newLead.getCity());
+        oldLead.setState(newLead.getState());
+        oldLead.setZipCode(newLead.getZipCode());
+        oldLead.setCountry(newLead.getCountry());
+        oldLead.setDescription(newLead.getDescription());
+        oldLead.setAssignedTo(newLead.getAssignedTo());
+        oldLead.setLastActivity(newLead.getLastActivity());
 
-        return null;
+        oldLead.setScore(leadScoringService.calculateScore(oldLead));
+
+        return leadmatrixRepository.save(oldLead);
+
     }
 
-    public LeadmatrixEntity createLead(LeadmatrixEntity lead) {
+    public LeadmatrixEntity updateLeadStatus(Long id, String status) {
+        LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElse(null);
 
-        lead.setStatus("NEW");
+        if (lead == null) {
+            return null;
+        }
 
-        return leadmatrixRespository.save(lead);
+        lead.setStatus(status);
+        lead.setScore(leadScoringService.calculateScore(lead));
+
+        return leadmatrixRepository.save(lead);
+    }
+
+    public LeadmatrixEntity assignLead(Long id, String salesEmail) {
+        LeadmatrixEntity lead = leadmatrixRepository.findById(id).orElse(null);
+
+        if (lead == null) {
+            return null;
+        }
+
+        lead.setAssignedTo(salesEmail);
+        return leadmatrixRepository.save(lead);
+    }
+
+    public List<LeadmatrixEntity> getHotLeads(Long companyId) {
+        return leadmatrixRepository.findByCompanyIdAndScoreGreaterThan(companyId, 70);
+    }
+
+    public long countCompanyLeads(Long companyId) {
+        return leadmatrixRepository.countByCompanyId(companyId);
+    }
+
+    public long countCompanyLeadsByStatus(Long companyId, String status) {
+        return leadmatrixRepository.countByCompanyIdAndStatusIgnoreCase(companyId, status);
+    }
+
+    public double getCompanyConversionRate(Long companyId) {
+        long total = leadmatrixRepository.countByCompanyId(companyId);
+        long customers = leadmatrixRepository.countByCompanyIdAndStatusIgnoreCase(companyId, "CUSTOMER");
+
+        if (total == 0) {
+            return 0;
+        }
+
+        return (customers * 100.0) / total;
     }
 
 
@@ -118,19 +194,19 @@ public class leadServices {
         notificationController.sendNotification("New lead assigned to sales team");
     }
 
-// manager and admin can views all lead ( manager api)
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-    @GetMapping("/report/all")
-    public List<LeadmatrixEntity> allLeads(){
-        return leadmatrixRespository.findAll();
-    }
-
-    // (sales api) salespeople can only view their assigned leads
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/sales/leads/{email}")
-    public List<LeadmatrixEntity> salesLeads(@PathVariable String email){
-        return leadmatrixRespository.findByAssignedTo(email);
-    }
+//// manager and admin can views all lead ( manager api)
+//    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+//    @GetMapping("/report/all")
+//    public List<LeadmatrixEntity> allLeads(){
+//        return leadmatrixRespository.findAll();
+//    }
+//
+//    // (sales api) salespeople can only view their assigned leads
+//    @PreAuthorize("hasRole('USER')")
+//    @GetMapping("/sales/leads/{email}")
+//    public List<LeadmatrixEntity> salesLeads(@PathVariable String email){
+//        return leadmatrixRespository.findByAssignedTo(email);
+//    }
 
 
 }

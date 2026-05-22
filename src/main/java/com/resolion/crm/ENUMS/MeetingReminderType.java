@@ -1,4 +1,14 @@
 package com.resolion.crm.ENUMS;
 
 public enum MeetingReminderType {
+    NONE,
+    AT_TIME_OF_MEETING,
+    FIVE_MINUTES_BEFORE,
+    TEN_MINUTES_BEFORE,
+    FIFTEEN_MINUTES_BEFORE,
+    THIRTY_MINUTES_BEFORE,
+    ONE_HOUR_BEFORE,
+    TWO_HOURS_BEFORE,
+    ONE_DAY_BEFORE,
+    TWO_DAYS_BEFORE
 }

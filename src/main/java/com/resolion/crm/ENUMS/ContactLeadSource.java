@@ -1,4 +1,32 @@
 package com.resolion.crm.ENUMS;
 
 public enum ContactLeadSource {
+    NONE,
+    ADVERTISEMENT,
+    COLD_CALL,
+    EMPLOYEE_REFERRAL,
+    EXTERNAL_REFERRAL,
+    ONLINE_STORE,
+    PARTNER,
+    PUBLIC_RELATIONS,
+    SALES_EMAIL_ALIAS,
+    SEMINAR_PARTNER,
+    INTERNAL_SEMINAR,
+    TRADE_SHOW,
+    WEB_DOWNLOAD,
+    WEB_RESEARCH,
+    WEB_CASES,
+    WEB_MAIL,
+    CHAT,
+    X_TWITTER,
+    FACEBOOK,
+    INSTAGRAM,
+    LINKEDIN,
+    GOOGLE,
+    YOUTUBE,
+    WHATSAPP,
+    WEBSITE,
+    REFERRAL,
+    EVENT,
+    OTHER
 }

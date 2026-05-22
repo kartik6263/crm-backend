@@ -1,4 +1,7 @@
 package com.resolion.crm.ENUMS;
 
-public class SalesOrderDiscountType {
+public enum SalesOrderDiscountType {
+    NONE,
+    PERCENTAGE,
+    DIRECT_PRICE_REDUCTION
 }
