@@ -45,11 +45,23 @@ public class ExcelLeadService {
                if (row.getRowNum() == 0) continue;
                if (row.getCell(0) == null) continue;
 
-               LeadmatrixEntity lead = new LeadmatrixEntity();
-               lead.setFirstName(
-                       row.getCell(0).getStringCellValue()
-               );
+//               LeadmatrixEntity lead = new LeadmatrixEntity();
+//               lead.setname(
+//                       row.getCell(0).getStringCellValue()
+//               );
               // lead.set(row.getCell(0).getStringCellValue());
+               LeadmatrixEntity lead = new LeadmatrixEntity();
+
+               String fullName =
+                       row.getCell(0).getStringCellValue();
+
+               String[] parts = fullName.split(" ", 2);
+
+               lead.setFirstName(parts[0]);
+
+               if (parts.length > 1) {
+                   lead.setLastName(parts[1]);
+               }
 
                lead.setEmail(row.getCell(1) != null ? row.getCell(1).getStringCellValue() : "");
                lead.setPhone(row.getCell(2) != null ? row.getCell(2).getStringCellValue() : "");
