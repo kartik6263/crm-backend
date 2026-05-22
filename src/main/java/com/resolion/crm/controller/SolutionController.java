@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.SolutionStatus;
-import com.resolion.crm.dpo.SolutionRequest;
-import com.resolion.crm.services.SolutionService;
+import com.resolion.crm.enums.SolutionStatus;
+import com.resolion.crm.dto.SolutionRequest;
+import com.resolion.crm.service.SolutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

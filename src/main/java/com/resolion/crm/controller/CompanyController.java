@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.dpo.AcceptInviteRequest;
-import com.resolion.crm.dpo.InviteUserRequest;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.dto.AcceptInviteRequest;
+import com.resolion.crm.dto.InviteUserRequest;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

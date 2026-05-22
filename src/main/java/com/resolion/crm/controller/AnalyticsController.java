@@ -1,10 +1,10 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.dpo.AnalyticsSummaryResponse;
-import com.resolion.crm.respository.InvoiceRepository;
-import com.resolion.crm.respository.LeadmatrixRespository;
-import com.resolion.crm.respository.QuoteRepository;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.dto.AnalyticsSummaryResponse;
+import com.resolion.crm.repository.InvoiceRepository;
+import com.resolion.crm.repository.LeadmatrixRespository;
+import com.resolion.crm.repository.QuoteRepository;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,8 +53,8 @@ public class AnalyticsController {
         res.setUnpaidInvoices(invoiceRepository.countByCompanyIdAndStatus(companyId, "UNPAID"));
 
         res.setTotalQuotes(quoteRepository.countByCompanyId(companyId));
-        res.setAcceptedQuotes(quoteRepository.countByCompanyIdAndStatus(companyId, "ACCEPTED"));
-        res.setPendingQuotes(quoteRepository.countByCompanyIdAndStatus(companyId, "PENDING"));
+        res.setAcceptedQuotes(quoteRepository.countByCompanyIdAndQuoteStage(companyId, "ACCEPTED"));
+        res.setPendingQuotes(quoteRepository.countByCompanyIdAndQuoteStage(companyId, "PENDING"));
 
         return res;
     }

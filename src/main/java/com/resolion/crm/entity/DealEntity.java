@@ -1,8 +1,8 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.DealLeadSource;
-import com.resolion.crm.ENUMS.DealStage;
-import com.resolion.crm.ENUMS.DealType;
+import com.resolion.crm.enums.DealLeadSource;
+import com.resolion.crm.enums.DealStage;
+import com.resolion.crm.enums.DealType;
 import jakarta.persistence.*;
 import lombok.*;
 

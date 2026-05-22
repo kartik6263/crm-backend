@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.ProductCategory;
-import com.resolion.crm.ENUMS.ProductManufacturer;
-import com.resolion.crm.dpo.ProductRequest;
-import com.resolion.crm.services.ProductService;
+import com.resolion.crm.enums.ProductCategory;
+import com.resolion.crm.enums.ProductManufacturer;
+import com.resolion.crm.dto.ProductRequest;
+import com.resolion.crm.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

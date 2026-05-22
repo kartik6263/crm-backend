@@ -1,20 +1,19 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.dpo.*;
+import com.resolion.crm.dto.*;
 import com.resolion.crm.entity.databaseCRM;
-import com.resolion.crm.respository.crmRespository;
+import com.resolion.crm.repository.crmRespository;
 import com.resolion.crm.security.JwtUtility;
-import com.resolion.crm.services.CompanyAccessService;
-//import com.resolion.crm.services.SignupFlowService;
-//import com.resolion.crm.services.UserTwoFactorService;
+import com.resolion.crm.service.CompanyAccessService;
+//import com.resolion.crm.service.SignupFlowService;
+//import com.resolion.crm.service.UserTwoFactorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import com.resolion.crm.services.crmService;
+import com.resolion.crm.service.crmService;
 
 import java.util.List;
 import java.util.Map;

@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.VendorCategory;
-import com.resolion.crm.ENUMS.VendorGlAccount;
-import com.resolion.crm.dpo.VendorRequest;
-import com.resolion.crm.services.VendorService;
+import com.resolion.crm.enums.VendorCategory;
+import com.resolion.crm.enums.VendorGlAccount;
+import com.resolion.crm.dto.VendorRequest;
+import com.resolion.crm.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

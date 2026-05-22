@@ -1,10 +1,10 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.AccountCopyAddressType;
-import com.resolion.crm.ENUMS.AccountIndustry;
-import com.resolion.crm.ENUMS.AccountOwnership;
-import com.resolion.crm.ENUMS.AccountRating;
-import com.resolion.crm.ENUMS.AccountType;
+import com.resolion.crm.enums.AccountCopyAddressType;
+import com.resolion.crm.enums.AccountIndustry;
+import com.resolion.crm.enums.AccountOwnership;
+import com.resolion.crm.enums.AccountRating;
+import com.resolion.crm.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.MeetingRelatedType;
-import com.resolion.crm.dpo.MeetingRequest;
-import com.resolion.crm.services.MeetingService;
+import com.resolion.crm.enums.MeetingRelatedType;
+import com.resolion.crm.dto.MeetingRequest;
+import com.resolion.crm.service.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

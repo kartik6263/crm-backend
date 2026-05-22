@@ -1,9 +1,9 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.QuoteCarrier;
-import com.resolion.crm.ENUMS.QuoteCopyAddressType;
-import com.resolion.crm.ENUMS.QuoteStage;
-import com.resolion.crm.ENUMS.QuoteTaxType;
+import com.resolion.crm.enums.QuoteCarrier;
+import com.resolion.crm.enums.QuoteCopyAddressType;
+import com.resolion.crm.enums.QuoteStage;
+import com.resolion.crm.enums.QuoteTaxType;
 import jakarta.persistence.*;
 import lombok.*;
 

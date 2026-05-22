@@ -4,11 +4,11 @@ import com.resolion.crm.entity.ActivityReminder;
 import com.resolion.crm.entity.Announcement;
 import com.resolion.crm.entity.AuditLog;
 import com.resolion.crm.entity.StickyNote;
-import com.resolion.crm.respository.ActivityReminderRepository;
-import com.resolion.crm.respository.AnnouncementRepository;
-import com.resolion.crm.respository.AuditLogRepository;
-import com.resolion.crm.respository.StickyNoteRepository;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.repository.ActivityReminderRepository;
+import com.resolion.crm.repository.AnnouncementRepository;
+import com.resolion.crm.repository.AuditLogRepository;
+import com.resolion.crm.repository.StickyNoteRepository;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,9 +1,9 @@
 package com.resolion.crm.entity;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.resolion.crm.ENUMS.ContactCopyAddressType;
-import com.resolion.crm.ENUMS.ContactLeadSource;
-import com.resolion.crm.ENUMS.ContactSalutation;
+import com.resolion.crm.enums.ContactCopyAddressType;
+import com.resolion.crm.enums.ContactLeadSource;
+import com.resolion.crm.enums.ContactSalutation;
 import jakarta.persistence.*;
 import lombok.*;
 

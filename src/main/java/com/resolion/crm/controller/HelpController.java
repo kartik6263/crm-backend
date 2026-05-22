@@ -1,7 +1,7 @@
 package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.HelpArticle;
-import com.resolion.crm.respository.HelpArticleRepository;
+import com.resolion.crm.repository.HelpArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

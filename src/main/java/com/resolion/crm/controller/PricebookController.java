@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.PricebookPricingModel;
-import com.resolion.crm.dpo.PricebookRequest;
-import com.resolion.crm.services.PricebookService;
+import com.resolion.crm.enums.PricebookPricingModel;
+import com.resolion.crm.dto.PricebookRequest;
+import com.resolion.crm.service.PricebookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

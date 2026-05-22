@@ -1,6 +1,6 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.SolutionStatus;
+import com.resolion.crm.enums.SolutionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

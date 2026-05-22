@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.QuoteStage;
-import com.resolion.crm.dpo.QuoteRequest;
-import com.resolion.crm.services.QuoteService;
+import com.resolion.crm.enums.QuoteStage;
+import com.resolion.crm.dto.QuoteRequest;
+import com.resolion.crm.service.QuoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

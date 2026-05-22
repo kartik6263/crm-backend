@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.CompanySetting;
-import com.resolion.crm.respository.CompanySettingRepository;
-import com.resolion.crm.services.AuditService;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.repository.CompanySettingRepository;
+import com.resolion.crm.service.AuditService;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

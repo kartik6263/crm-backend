@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
 
-import com.resolion.crm.ENUMS.TaskStatus;
-import com.resolion.crm.dpo.TaskRequest;
-import com.resolion.crm.services.TaskService;
+import com.resolion.crm.enums.TaskStatus;
+import com.resolion.crm.dto.TaskRequest;
+import com.resolion.crm.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

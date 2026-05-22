@@ -2,23 +2,23 @@ package com.resolion.crm.controller;
 
 
 
-import com.resolion.crm.ENUMS.*;
+import com.resolion.crm.enums.*;
 import com.resolion.crm.entity.LeadActivity;
 import com.resolion.crm.entity.LeadmatrixEntity;
 import com.resolion.crm.entity.databaseCRM;
-import com.resolion.crm.respository.ActivityRepository;
-import com.resolion.crm.respository.LeadmatrixRespository;
-import com.resolion.crm.services.CompanyAccessService;
-import com.resolion.crm.services.EmailService;
-import com.resolion.crm.services.UsageLimitService;
-import com.resolion.crm.services.crmService;
-import com.resolion.crm.services.leadServices;
+import com.resolion.crm.repository.ActivityRepository;
+import com.resolion.crm.repository.LeadmatrixRespository;
+import com.resolion.crm.service.CompanyAccessService;
+import com.resolion.crm.service.EmailService;
+import com.resolion.crm.service.UsageLimitService;
+import com.resolion.crm.service.crmService;
+import com.resolion.crm.service.leadServices;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.resolion.crm.entity.*;
-import com.resolion.crm.respository.*;
-import com.resolion.crm.services.*;
+import com.resolion.crm.repository.*;
+import com.resolion.crm.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

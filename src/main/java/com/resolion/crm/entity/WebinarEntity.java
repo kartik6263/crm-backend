@@ -1,8 +1,8 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.WebinarDurationType;
-import com.resolion.crm.ENUMS.WebinarStatus;
-import com.resolion.crm.ENUMS.WebinarType;
+import com.resolion.crm.enums.WebinarDurationType;
+import com.resolion.crm.enums.WebinarStatus;
+import com.resolion.crm.enums.WebinarType;
 import jakarta.persistence.*;
 import lombok.*;
 

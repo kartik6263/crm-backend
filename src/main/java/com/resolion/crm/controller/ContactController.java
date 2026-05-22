@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.ContactLeadSource;
-import com.resolion.crm.dpo.ContactRequest;
-import com.resolion.crm.services.ContactService;
+import com.resolion.crm.enums.ContactLeadSource;
+import com.resolion.crm.dto.ContactRequest;
+import com.resolion.crm.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

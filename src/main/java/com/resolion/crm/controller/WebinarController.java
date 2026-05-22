@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.WebinarStatus;
-import com.resolion.crm.ENUMS.WebinarType;
-import com.resolion.crm.dpo.WebinarRequest;
-import com.resolion.crm.services.WebinarService;
+import com.resolion.crm.enums.WebinarStatus;
+import com.resolion.crm.enums.WebinarType;
+import com.resolion.crm.dto.WebinarRequest;
+import com.resolion.crm.service.WebinarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

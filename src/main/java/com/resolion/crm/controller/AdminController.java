@@ -1,27 +1,22 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.CompanyRole;
-import com.resolion.crm.dpo.AdminVerifyRequest;
-import com.resolion.crm.entity.*;
-import com.resolion.crm.respository.*;
+import com.resolion.crm.enums.CompanyRole;
+import com.resolion.crm.dto.AdminVerifyRequest;
 import com.resolion.crm.entity.Company;
 import com.resolion.crm.entity.CompanyMember;
 import com.resolion.crm.entity.Subscription;
 import com.resolion.crm.entity.databaseCRM;
-import com.resolion.crm.respository.*;
-import com.resolion.crm.services.CompanyAccessService;
-import com.resolion.crm.services.UsageLimitService;
-import com.resolion.crm.services.crmService;
+import com.resolion.crm.service.CompanyAccessService;
+import com.resolion.crm.service.UsageLimitService;
+import com.resolion.crm.service.crmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import com.resolion.crm.respository.CompanyMemberRepository;
-import com.resolion.crm.respository.CompanyRepository;
-import com.resolion.crm.respository.LeadmatrixRespository;
-import com.resolion.crm.respository.SubscriptionRepository;
-import com.resolion.crm.respository.crmRespository;
-import org.springframework.web.bind.annotation.*;
+import com.resolion.crm.repository.CompanyMemberRepository;
+import com.resolion.crm.repository.CompanyRepository;
+import com.resolion.crm.repository.LeadmatrixRespository;
+import com.resolion.crm.repository.SubscriptionRepository;
+import com.resolion.crm.repository.crmRespository;
 
 import java.util.HashMap;
 import java.util.List;

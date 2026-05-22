@@ -1,7 +1,7 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.OfflineCampaignStatus;
-import com.resolion.crm.ENUMS.OfflineCampaignType;
+import com.resolion.crm.enums.OfflineCampaignStatus;
+import com.resolion.crm.enums.OfflineCampaignType;
 import jakarta.persistence.*;
 import lombok.*;
 

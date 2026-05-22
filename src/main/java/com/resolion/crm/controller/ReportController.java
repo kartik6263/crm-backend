@@ -2,17 +2,17 @@ package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.ReportFilter;
 import com.resolion.crm.entity.ReportSharing;
-import com.resolion.crm.dpo.AiReportRequest;
-import com.resolion.crm.respository.ReportFilterRepository;
-import com.resolion.crm.respository.ReportSharingRepository;
+import com.resolion.crm.dto.AiReportRequest;
+import com.resolion.crm.repository.ReportFilterRepository;
+import com.resolion.crm.repository.ReportSharingRepository;
 
-import com.resolion.crm.dpo.AiReportPlan;
-import com.resolion.crm.dpo.AiReportFilterPlan;
-import com.resolion.crm.services.*;
+import com.resolion.crm.dto.AiReportPlan;
+import com.resolion.crm.dto.AiReportFilterPlan;
+import com.resolion.crm.service.*;
 
-import com.resolion.crm.dpo.ReportRunResponse;
+import com.resolion.crm.dto.ReportRunResponse;
 import com.resolion.crm.entity.*;
-import com.resolion.crm.respository.*;
+import com.resolion.crm.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.OfflineCampaignStatus;
-import com.resolion.crm.ENUMS.OfflineCampaignType;
-import com.resolion.crm.dpo.OfflineCampaignRequest;
-import com.resolion.crm.services.OfflineCampaignService;
+import com.resolion.crm.enums.OfflineCampaignStatus;
+import com.resolion.crm.enums.OfflineCampaignType;
+import com.resolion.crm.dto.OfflineCampaignRequest;
+import com.resolion.crm.service.OfflineCampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

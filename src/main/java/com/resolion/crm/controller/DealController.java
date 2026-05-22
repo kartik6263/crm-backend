@@ -1,10 +1,10 @@
 package com.resolion.crm.controller;
 
 
-import com.resolion.crm.ENUMS.DealStage;
-import com.resolion.crm.dpo.DealRequest;
-import com.resolion.crm.dpo.DealResponse;
-import com.resolion.crm.services.DealService;
+import com.resolion.crm.enums.DealStage;
+import com.resolion.crm.dto.DealRequest;
+import com.resolion.crm.dto.DealResponse;
+import com.resolion.crm.service.DealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

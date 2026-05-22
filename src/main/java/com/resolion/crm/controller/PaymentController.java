@@ -3,13 +3,13 @@ package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.Subscription;
 import com.resolion.crm.entity.CompanySetting;
-import com.resolion.crm.respository.CompanySettingRepository;
-import com.resolion.crm.respository.SubscriptionRepository;
-import com.resolion.crm.services.PaymentService;
+import com.resolion.crm.repository.CompanySettingRepository;
+import com.resolion.crm.repository.SubscriptionRepository;
+import com.resolion.crm.service.PaymentService;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.resolion.crm.services.PlanService;
+import com.resolion.crm.service.PlanService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

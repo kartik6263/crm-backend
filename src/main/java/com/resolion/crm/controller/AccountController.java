@@ -1,10 +1,10 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.AccountIndustry;
-import com.resolion.crm.ENUMS.AccountRating;
-import com.resolion.crm.ENUMS.AccountType;
-import com.resolion.crm.dpo.AccountRequest;
-import com.resolion.crm.services.AccountService;
+import com.resolion.crm.enums.AccountIndustry;
+import com.resolion.crm.enums.AccountRating;
+import com.resolion.crm.enums.AccountType;
+import com.resolion.crm.dto.AccountRequest;
+import com.resolion.crm.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

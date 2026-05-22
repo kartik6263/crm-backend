@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.InvoiceStatus;
-import com.resolion.crm.dpo.InvoiceRequest;
-import com.resolion.crm.services.InvoiceService;
+import com.resolion.crm.enums.InvoiceStatus;
+import com.resolion.crm.dto.InvoiceRequest;
+import com.resolion.crm.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

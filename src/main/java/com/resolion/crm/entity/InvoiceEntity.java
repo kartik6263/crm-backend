@@ -1,8 +1,8 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.InvoiceCopyAddressType;
-import com.resolion.crm.ENUMS.InvoiceStatus;
-import com.resolion.crm.ENUMS.InvoiceTaxType;
+import com.resolion.crm.enums.InvoiceCopyAddressType;
+import com.resolion.crm.enums.InvoiceStatus;
+import com.resolion.crm.enums.InvoiceTaxType;
 import jakarta.persistence.*;
 import lombok.*;
 

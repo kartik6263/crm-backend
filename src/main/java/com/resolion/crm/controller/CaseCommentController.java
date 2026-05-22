@@ -1,7 +1,7 @@
 package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.CaseCommentEntity;
-import com.resolion.crm.services.CaseCommentService;
+import com.resolion.crm.service.CaseCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

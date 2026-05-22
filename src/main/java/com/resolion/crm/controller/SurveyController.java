@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.SurveyCampaignType;
-import com.resolion.crm.ENUMS.SurveyStatus;
-import com.resolion.crm.dpo.SurveyRequest;
-import com.resolion.crm.services.SurveyService;
+import com.resolion.crm.enums.SurveyCampaignType;
+import com.resolion.crm.enums.SurveyStatus;
+import com.resolion.crm.dto.SurveyRequest;
+import com.resolion.crm.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

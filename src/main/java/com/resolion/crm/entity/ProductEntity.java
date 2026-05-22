@@ -1,8 +1,8 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.ProductCategory;
-import com.resolion.crm.ENUMS.ProductManufacturer;
-import com.resolion.crm.ENUMS.ProductTaxType;
+import com.resolion.crm.enums.ProductCategory;
+import com.resolion.crm.enums.ProductManufacturer;
+import com.resolion.crm.enums.ProductTaxType;
 import jakarta.persistence.*;
 import lombok.*;
 

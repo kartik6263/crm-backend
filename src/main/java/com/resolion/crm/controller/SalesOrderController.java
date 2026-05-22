@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.SalesOrderStatus;
-import com.resolion.crm.dpo.SalesOrderRequest;
-import com.resolion.crm.services.SalesOrderService;
+import com.resolion.crm.enums.SalesOrderStatus;
+import com.resolion.crm.dto.SalesOrderRequest;
+import com.resolion.crm.service.SalesOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
 
-import com.resolion.crm.dpo.CaseRequestDPO;
+import com.resolion.crm.dto.CaseRequestDTO;
 import com.resolion.crm.entity.CaseEntity;
-import com.resolion.crm.services.CaseService;
+import com.resolion.crm.service.CaseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class CaseController {
     public ResponseEntity<CaseEntity> createCase(
             @RequestParam String email,
             @RequestParam Long companyId,
-            @Valid @RequestBody CaseRequestDPO dpo
+            @Valid @RequestBody CaseRequestDTO dpo
     ) {
 
         return ResponseEntity.ok(

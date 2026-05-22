@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.PurchaseOrderStatus;
-import com.resolion.crm.dpo.PurchaseOrderRequest;
-import com.resolion.crm.services.PurchaseOrderService;
+import com.resolion.crm.enums.PurchaseOrderStatus;
+import com.resolion.crm.dto.PurchaseOrderRequest;
+import com.resolion.crm.service.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

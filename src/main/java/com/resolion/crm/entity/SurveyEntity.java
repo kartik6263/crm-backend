@@ -1,9 +1,9 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.SurveyCampaignType;
-import com.resolion.crm.ENUMS.SurveyDepartment;
-import com.resolion.crm.ENUMS.SurveyStatus;
-import com.resolion.crm.ENUMS.SurveyType;
+import com.resolion.crm.enums.SurveyCampaignType;
+import com.resolion.crm.enums.SurveyDepartment;
+import com.resolion.crm.enums.SurveyStatus;
+import com.resolion.crm.enums.SurveyType;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,7 +1,7 @@
 package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.HomeDashboardStats;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

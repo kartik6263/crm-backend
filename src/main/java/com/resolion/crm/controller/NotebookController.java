@@ -1,8 +1,8 @@
 package com.resolion.crm.controller;
 
 import com.resolion.crm.entity.Notebook;
-import com.resolion.crm.respository.NotebookRepository;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.repository.NotebookRepository;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

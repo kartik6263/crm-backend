@@ -1,5 +1,5 @@
 package com.resolion.crm.entity;
-import com.resolion.crm.ENUMS.CompanyRole;
+import com.resolion.crm.enums.CompanyRole;
 import jakarta.persistence.*;
 
 @Entity

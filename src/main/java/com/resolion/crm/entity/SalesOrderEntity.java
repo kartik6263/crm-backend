@@ -1,9 +1,9 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.SalesOrderCarrier;
-import com.resolion.crm.ENUMS.SalesOrderCopyAddressType;
-import com.resolion.crm.ENUMS.SalesOrderStatus;
-import com.resolion.crm.ENUMS.SalesOrderTaxType;
+import com.resolion.crm.enums.SalesOrderCarrier;
+import com.resolion.crm.enums.SalesOrderCopyAddressType;
+import com.resolion.crm.enums.SalesOrderStatus;
+import com.resolion.crm.enums.SalesOrderTaxType;
 import jakarta.persistence.*;
 import lombok.*;
 

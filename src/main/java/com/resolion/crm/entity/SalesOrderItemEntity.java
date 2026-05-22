@@ -1,8 +1,8 @@
 package com.resolion.crm.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.resolion.crm.ENUMS.SalesOrderDiscountType;
-import com.resolion.crm.ENUMS.SalesOrderTaxType;
+import com.resolion.crm.enums.SalesOrderDiscountType;
+import com.resolion.crm.enums.SalesOrderTaxType;
 import jakarta.persistence.*;
 import lombok.*;
 

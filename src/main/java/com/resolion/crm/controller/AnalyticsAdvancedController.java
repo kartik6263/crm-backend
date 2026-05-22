@@ -1,13 +1,13 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.dpo.SalesLeaderboardResponse;
+import com.resolion.crm.dto.SalesLeaderboardResponse;
 import com.resolion.crm.entity.LeadmatrixEntity;
 import java.util.stream.Collectors;
-import com.resolion.crm.dpo.AiInsightResponse;
-import com.resolion.crm.dpo.ChartResponse;
-import com.resolion.crm.respository.InvoiceRepository;
-import com.resolion.crm.respository.LeadmatrixRespository;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.dto.AiInsightResponse;
+import com.resolion.crm.dto.ChartResponse;
+import com.resolion.crm.repository.InvoiceRepository;
+import com.resolion.crm.repository.LeadmatrixRespository;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

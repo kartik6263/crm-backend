@@ -1,6 +1,6 @@
 package com.resolion.crm.entity;
 
-import com.resolion.crm.ENUMS.PricebookPricingModel;
+import com.resolion.crm.enums.PricebookPricingModel;
 import jakarta.persistence.*;
 import lombok.*;
 

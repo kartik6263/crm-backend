@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import com.resolion.crm.entity.CompanySetting;
 import com.resolion.crm.entity.CompanyUsage;
-import com.resolion.crm.respository.CompanySettingRepository;
-import com.resolion.crm.respository.CompanyUsageRepository;
-import com.resolion.crm.services.CompanyAccessService;
+import com.resolion.crm.repository.CompanySettingRepository;
+import com.resolion.crm.repository.CompanyUsageRepository;
+import com.resolion.crm.service.CompanyAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

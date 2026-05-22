@@ -1,9 +1,9 @@
 package com.resolion.crm.controller;
 
-import com.resolion.crm.ENUMS.CampaignStatus;
-import com.resolion.crm.ENUMS.CampaignType;
-import com.resolion.crm.dpo.CampaignRequest;
-import com.resolion.crm.services.CampaignService;
+import com.resolion.crm.enums.CampaignStatus;
+import com.resolion.crm.enums.CampaignType;
+import com.resolion.crm.dto.CampaignRequest;
+import com.resolion.crm.service.CampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

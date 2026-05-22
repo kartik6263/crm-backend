@@ -1,0 +1,22 @@
+package com.resolion.crm.enums;
+
+public enum OfflineCampaignType {
+    NONE,
+    CONFERENCE,
+    WEBINAR,
+    TRADE_SHOW,
+    PUBLIC_RELATIONS,
+    PARTNERS,
+    REFERRAL_PROGRAM,
+    ADVERTISEMENT,
+    BANNER_ADS,
+    DIRECT_MAIL,
+    EMAIL,
+    TELEMARKETING,
+    SEMINAR,
+    ROADSHOW,
+    EXHIBITION,
+    PRESS_MEET,
+    COMMUNITY_EVENT,
+    OTHERS
+}

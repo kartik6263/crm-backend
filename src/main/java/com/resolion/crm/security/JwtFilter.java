@@ -3,8 +3,8 @@ package com.resolion.crm.security;
 
 import com.resolion.crm.entity.CompanySetting;
 import com.resolion.crm.entity.Subscription;
-import com.resolion.crm.respository.CompanySettingRepository;
-import com.resolion.crm.respository.SubscriptionRepository;
+import com.resolion.crm.repository.CompanySettingRepository;
+import com.resolion.crm.repository.SubscriptionRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
