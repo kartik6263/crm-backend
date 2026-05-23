@@ -1,61 +1,165 @@
 package com.resolion.crm.controller;
 
+
 import com.resolion.crm.dto.AnalyticsSummaryResponse;
+import com.resolion.crm.enums.InvoiceStatus;
+import com.resolion.crm.enums.LeadStatus;
+import com.resolion.crm.enums.QuoteStage;
+import com.resolion.crm.exception.AccessDeniedException;
 import com.resolion.crm.repository.InvoiceRepository;
 import com.resolion.crm.repository.LeadmatrixRespository;
 import com.resolion.crm.repository.QuoteRepository;
 import com.resolion.crm.service.CompanyAccessService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/analytics")
+@RequiredArgsConstructor
+@Slf4j
+@CrossOrigin
 public class AnalyticsController {
 
-    @Autowired
-    private CompanyAccessService companyAccessService;
+    private final CompanyAccessService companyAccessService;
 
-    @Autowired
-    private LeadmatrixRespository leadRepository;
+    private final LeadmatrixRespository leadRepository;
 
-    @Autowired
-    private InvoiceRepository invoiceRepository;
+    private final InvoiceRepository invoiceRepository;
 
-    @Autowired
-    private QuoteRepository quoteRepository;
+    private final QuoteRepository quoteRepository;
 
-    private void checkAccess(String email, Long companyId) {
-        if (!companyAccessService.hasCompanyAccess(email, companyId)) {
-            throw new RuntimeException("Access Denied");
+    // =========================================================
+    // ACCESS VALIDATION
+    // =========================================================
+
+    private void validateAccess(
+            String email,
+            Long companyId
+    ) {
+
+        boolean hasAccess =
+                companyAccessService.hasCompanyAccess(
+                        email,
+                        companyId
+                );
+
+        if (!hasAccess) {
+
+            log.warn(
+                    "Unauthorized analytics access attempt by {} for company {}",
+                    email,
+                    companyId
+            );
+
+            throw new AccessDeniedException(
+                    "You do not have access to this company"
+            );
         }
     }
 
+    // =========================================================
+    // ANALYTICS SUMMARY
+    // =========================================================
+
     @GetMapping("/summary")
-    public AnalyticsSummaryResponse summary(@RequestParam String email,
-                                            @RequestParam Long companyId) {
-        checkAccess(email, companyId);
+    public ResponseEntity<AnalyticsSummaryResponse> summary(
+            @RequestParam String email,
+            @RequestParam Long companyId
+    ) {
 
-        long totalLeads = leadRepository.countByCompanyId(companyId);
-        long customers = leadRepository.countByCompanyIdAndStatus(companyId, "CUSTOMER");
-        long lost = leadRepository.countByCompanyIdAndStatus(companyId, "LOST");
+        validateAccess(email, companyId);
 
-        double conversion = totalLeads == 0 ? 0 : ((double) customers / totalLeads) * 100;
+        log.info(
+                "Generating analytics summary for company {} by user {}",
+                companyId,
+                email
+        );
 
-        AnalyticsSummaryResponse res = new AnalyticsSummaryResponse();
+        // =====================================================
+        // LEADS
+        // =====================================================
 
-        res.setTotalLeads(totalLeads);
-        res.setCustomers(customers);
-        res.setLostLeads(lost);
-        res.setConversionRate(conversion);
+        long totalLeads =
+                leadRepository.countByCompanyId(companyId);
 
-        res.setTotalInvoices(invoiceRepository.countByCompanyId(companyId));
-        res.setPaidInvoices(invoiceRepository.countByCompanyIdAndStatus(companyId, "PAID"));
-        res.setUnpaidInvoices(invoiceRepository.countByCompanyIdAndStatus(companyId, "UNPAID"));
+        long customers =
+                leadRepository.countByCompanyIdAndStatus(
+                        companyId,
+                        LeadStatus.CUSTOMER
+                );
 
-        res.setTotalQuotes(quoteRepository.countByCompanyId(companyId));
-        res.setAcceptedQuotes(quoteRepository.countByCompanyIdAndQuoteStage(companyId, "ACCEPTED"));
-        res.setPendingQuotes(quoteRepository.countByCompanyIdAndQuoteStage(companyId, "PENDING"));
+        long lost =
+                leadRepository.countByCompanyIdAndStatus(
+                        companyId,
+                        LeadStatus.LOST
+                );
 
-        return res;
+        double conversionRate =
+                totalLeads == 0
+                        ? 0
+                        : ((double) customers / totalLeads) * 100;
+
+        // =====================================================
+        // INVOICES
+        // =====================================================
+
+        long totalInvoices =
+                invoiceRepository.countByCompanyId(companyId);
+
+        long paidInvoices =
+                invoiceRepository.countByCompanyIdAndStatus(
+                        companyId,
+                        InvoiceStatus.PAID
+                );
+
+        long unpaidInvoices =
+                invoiceRepository.countByCompanyIdAndStatus(
+                        companyId,
+                        InvoiceStatus.UNPAID
+                );
+
+        // =====================================================
+        // QUOTES
+        // =====================================================
+
+        long totalQuotes =
+                quoteRepository.countByCompanyId(companyId);
+
+        long acceptedQuotes =
+                quoteRepository.countByCompanyIdAndQuoteStage(
+                        companyId,
+                        QuoteStage.ACCEPTED
+                );
+
+        long pendingQuotes =
+                quoteRepository.countByCompanyIdAndQuoteStage(
+                        companyId,
+                        QuoteStage.PENDING
+                );
+
+
+        // =====================================================
+        // RESPONSE
+        // =====================================================
+
+        AnalyticsSummaryResponse response =
+                AnalyticsSummaryResponse.builder()
+                        .totalLeads(totalLeads)
+                        .customers(customers)
+                        .lostLeads(lost)
+                        .conversionRate(
+                                Math.round(conversionRate * 100.0) / 100.0
+                        )
+                        .totalInvoices(totalInvoices)
+                        .paidInvoices(paidInvoices)
+                        .unpaidInvoices(unpaidInvoices)
+                        .totalQuotes(totalQuotes)
+                        .acceptedQuotes(acceptedQuotes)
+                        .pendingQuotes(pendingQuotes)
+                        .build();
+
+        return ResponseEntity.ok(response);
     }
 }

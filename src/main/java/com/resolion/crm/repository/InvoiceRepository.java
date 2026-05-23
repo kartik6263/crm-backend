@@ -23,5 +23,9 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
 
     long countByCompanyId(Long companyId);
 
-    long countByCompanyIdAndStatus(Long companyId, String InvoiceStatus );
+    //long countByCompanyIdAndStatus(Long companyId, String InvoiceStatus );
+    long countByCompanyIdAndStatus(
+            Long companyId,
+            InvoiceStatus status
+    );
 }

@@ -16,5 +16,6 @@ public enum LeadStatus {
     CUSTOMER,
     FOLLOW_UP,
     ON_HOLD,
+    LOST,
     CLOSED
 }

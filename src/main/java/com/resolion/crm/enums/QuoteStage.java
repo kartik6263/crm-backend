@@ -11,5 +11,8 @@ public enum QuoteStage {
     APPROVED,
     REJECTED,
     EXPIRED,
+    SENT,
+    PENDING,
+    ACCEPTED,
     CANCELLED
 }

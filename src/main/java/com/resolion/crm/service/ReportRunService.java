@@ -5,10 +5,12 @@ package com.resolion.crm.service;
 import com.resolion.crm.dto.ReportRunResponse;
 import com.resolion.crm.entity.InvoiceEntity;
 import com.resolion.crm.entity.LeadmatrixEntity;
+import com.resolion.crm.enums.*;
 import com.resolion.crm.entity.PurchaseOrderEntity;
 import com.resolion.crm.entity.QuoteEntity;
 import com.resolion.crm.entity.ReportDefinition;
 import com.resolion.crm.entity.SalesOrderEntity;
+import com.resolion.crm.enums.LeadSource;
 import com.resolion.crm.repository.InvoiceRepository;
 import com.resolion.crm.repository.LeadmatrixRespository;
 import com.resolion.crm.repository.PurchaseOrderRepository;
@@ -148,32 +150,48 @@ public class ReportRunService {
         long total =
                 invoiceRepository.countByCompanyId(companyId);
 
-        long paid =
+        long paidInvoices =
                 invoiceRepository.countByCompanyIdAndStatus(
                         companyId,
-                        "PAID"
+                        InvoiceStatus.PAID
                 );
 
-        long unpaid =
+        long unpaidInvoices =
                 invoiceRepository.countByCompanyIdAndStatus(
                         companyId,
-                        "UNPAID"
+                        InvoiceStatus.UNPAID
                 );
 
-        long overdue =
+        long overdueInvoices =
                 invoiceRepository.countByCompanyIdAndStatus(
                         companyId,
-                        "OVERDUE"
+                        InvoiceStatus.OVERDUE
                 );
 
-        List<String> columns = List.of("Metric", "Value");
+        List<String> columns = List.of(
+                "Metric",
+                "Value"
+        );
 
-        List<Map<String, Object>> rows = new ArrayList<>();
+        List<Map<String, Object>> rows =
+                new ArrayList<>();
 
         rows.add(metric("Total Invoices", total));
-        rows.add(metric("Paid Invoices", paid));
-        rows.add(metric("Unpaid Invoices", unpaid));
-        rows.add(metric("Overdue Invoices", overdue));
+
+        rows.add(metric(
+                "Paid Invoices",
+                paidInvoices
+        ));
+
+        rows.add(metric(
+                "Unpaid Invoices",
+                unpaidInvoices
+        ));
+
+        rows.add(metric(
+                "Overdue Invoices",
+                overdueInvoices
+        ));
 
         return response(report, columns, rows);
     }
@@ -193,33 +211,48 @@ public class ReportRunService {
         long accepted =
                 quoteRepository.countByCompanyIdAndQuoteStage(
                         companyId,
-                        "ACCEPTED"
+                        QuoteStage.ACCEPTED
                 );
 
         long pending =
                 quoteRepository.countByCompanyIdAndQuoteStage(
                         companyId,
-                        "PENDING"
+                        QuoteStage.PENDING
                 );
 
         long rejected =
                 quoteRepository.countByCompanyIdAndQuoteStage(
                         companyId,
-                        "REJECTED"
+                        QuoteStage.REJECTED
                 );
 
-        List<String> columns = List.of("Metric", "Value");
+        List<String> columns = List.of(
+                "Metric",
+                "Value"
+        );
 
-        List<Map<String, Object>> rows = new ArrayList<>();
+        List<Map<String, Object>> rows =
+                new ArrayList<>();
 
         rows.add(metric("Total Quotes", total));
-        rows.add(metric("Accepted Quotes", accepted));
-        rows.add(metric("Pending Quotes", pending));
-        rows.add(metric("Rejected Quotes", rejected));
+
+        rows.add(metric(
+                "Accepted Quotes",
+                accepted
+        ));
+
+        rows.add(metric(
+                "Pending Quotes",
+                pending
+        ));
+
+        rows.add(metric(
+                "Rejected Quotes",
+                rejected
+        ));
 
         return response(report, columns, rows);
     }
-
     // =========================================================
     // SALES ORDER
     // =========================================================
@@ -348,56 +381,43 @@ public class ReportRunService {
         return response(report, columns, rows);
     }
 
-    private ReportRunResponse leadStatus(
-            ReportDefinition report,
-            Long companyId
-    ) {
 
-        List<String> statuses = List.of(
-                "NEW",
-                "CONTACTED",
-                "QUALIFIED",
-                "CUSTOMER",
-                "LOST"
-        );
+   private ReportRunResponse leadStatus(
+        ReportDefinition report,
+        Long companyId
+     ) {
 
-        List<String> columns = List.of(
-                "Status",
-                "Count"
-        );
+    List<String> columns = List.of(
+            "Status",
+            "Count"
+    );
 
-        List<Map<String, Object>> rows = new ArrayList<>();
+    List<Map<String, Object>> rows = new ArrayList<>();
 
-        for (String status : statuses) {
+     for (LeadStatus status : LeadStatus.values()) {
 
-            Map<String, Object> row = new LinkedHashMap<>();
+        long count =
+                leadRepository.countByCompanyIdAndStatus(
+                        companyId,
+                        status
+                );
 
-            row.put("Status", status);
+        Map<String, Object> row =
+                new LinkedHashMap<>();
 
-            row.put(
-                    "Count",
-                    leadRepository.countByCompanyIdAndStatus(
-                            companyId,
-                            status
-                    )
-            );
+        row.put("Status", status.name());
+        row.put("Count", count);
 
-            rows.add(row);
-        }
+        rows.add(row);
+     }
 
-        return response(report, columns, rows);
+      return response(report, columns, rows);
     }
 
     private ReportRunResponse leadSource(
             ReportDefinition report,
             Long companyId
     ) {
-
-        List<String> sources = List.of(
-                "Facebook",
-                "Website",
-                "Referral"
-        );
 
         List<String> columns = List.of(
                 "Source",
@@ -406,19 +426,19 @@ public class ReportRunService {
 
         List<Map<String, Object>> rows = new ArrayList<>();
 
-        for (String source : sources) {
+        for (LeadSource source : LeadSource.values()) {
 
-            Map<String, Object> row = new LinkedHashMap<>();
-
-            row.put("Source", source);
-
-            row.put(
-                    "Count",
+            long count =
                     leadRepository.countByCompanyIdAndSource(
                             companyId,
                             source
-                    )
-            );
+                    );
+
+            Map<String, Object> row =
+                    new LinkedHashMap<>();
+
+            row.put("Source", source.name());
+            row.put("Count", count);
 
             rows.add(row);
         }
@@ -437,13 +457,13 @@ public class ReportRunService {
         long customers =
                 leadRepository.countByCompanyIdAndStatus(
                         companyId,
-                        "CUSTOMER"
+                        LeadStatus.CUSTOMER
                 );
 
         long lost =
                 leadRepository.countByCompanyIdAndStatus(
                         companyId,
-                        "LOST"
+                        LeadStatus.LOST
                 );
 
         double conversionRate =

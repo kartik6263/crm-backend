@@ -53,6 +53,7 @@ public class InvoiceEntity {
     @Column(name = "status", length = 80)
     private InvoiceStatus status;
 
+
     @Column(name = "invoice_date")
     private LocalDate invoiceDate;
 

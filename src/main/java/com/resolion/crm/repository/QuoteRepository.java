@@ -18,5 +18,9 @@ public interface QuoteRepository extends JpaRepository<QuoteEntity, Long> {
 
     long countByCompanyId(Long companyId);
 
-    long countByCompanyIdAndQuoteStage(Long companyId, String QuoteStage );
+ //   long countByCompanyIdAndQuoteStage(Long companyId, String QuoteStage );
+ long countByCompanyIdAndQuoteStage(
+         Long companyId,
+         QuoteStage quoteStage
+ );
 }
